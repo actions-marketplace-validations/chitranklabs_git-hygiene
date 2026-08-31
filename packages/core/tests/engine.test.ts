@@ -1,5 +1,8 @@
 import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
+import { execSync } from 'node:child_process';
 import {
   validateBranch,
   validateTitle,
@@ -52,6 +55,19 @@ describe('Validation Engine', () => {
     it('should reject titles with invalid casing', async () => {
       assert.strictEqual((await validateTitle('FEAT: title')).valid, false);
       assert.strictEqual((await validateTitle('feat(Scope): title')).valid, false);
+    });
+
+    it('should accept breaking change with scope (feat(scope)!: msg)', async () => {
+      assert.strictEqual((await validateTitle('feat(scope)!: breaking change')).valid, true);
+      assert.strictEqual((await validateTitle('fix(core)!: remove deprecated api')).valid, true);
+    });
+
+    it('should accept breaking change without scope (feat!: msg)', async () => {
+      assert.strictEqual((await validateTitle('feat!: breaking change')).valid, true);
+    });
+
+    it('should reject wrong order (feat!(scope): msg)', async () => {
+      assert.strictEqual((await validateTitle('feat!(scope): breaking change')).valid, false);
     });
   });
 
@@ -109,9 +125,51 @@ describe('Validation Engine', () => {
 
   describe('getRecommendedBump', () => {
     it('should return a recommended bump result', async () => {
-      const res = await getRecommendedBump();
-      assert.ok(res.releaseType);
-      assert.ok(res.reason);
+      const tempDir = path.resolve(process.cwd(), `temp-git-test-${Date.now()}`);
+      fs.mkdirSync(tempDir, { recursive: true });
+
+      const originalCwd = process.cwd();
+      try {
+        execSync('git init', { cwd: tempDir, stdio: 'ignore' });
+        execSync('git config user.name "Test"', { cwd: tempDir, stdio: 'ignore' });
+        execSync('git config user.email "test@example.com"', { cwd: tempDir, stdio: 'ignore' });
+        fs.writeFileSync(path.join(tempDir, 'file.txt'), 'hello');
+        execSync('git add file.txt', { cwd: tempDir, stdio: 'ignore' });
+        execSync('git commit -m "feat: initial commit"', { cwd: tempDir, stdio: 'ignore' });
+
+        // Temporarily change cwd to tempDir so getRecommendedBump runs there
+        process.chdir(tempDir);
+
+        const res = await getRecommendedBump();
+        assert.strictEqual(res.releaseType, 'minor');
+        assert.ok(res.reason);
+      } finally {
+        process.chdir(originalCwd);
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    });
+  });
+
+  describe('validateCommit error resilience', () => {
+    it('should throw a descriptive error when a string parserPreset module does not exist', async () => {
+      const config = await resolveConfig({
+        parserPreset: 'non-existent-preset-module-xyz-abc',
+      });
+      await assert.rejects(
+        () => validateCommit('feat: test', config),
+        (err: unknown) => {
+          assert.ok(err instanceof Error);
+          assert.ok(
+            err.message.startsWith('Failed to load parser preset'),
+            `Expected wrapped error message, got: ${err.message}`,
+          );
+          assert.ok(
+            err.message.includes('non-existent-preset-module-xyz-abc'),
+            `Expected error to include the preset name, got: ${err.message}`,
+          );
+          return true;
+        },
+      );
     });
   });
 

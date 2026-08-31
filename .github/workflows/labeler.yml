@@ -24,12 +24,12 @@ jobs:
       pull-requests: write
     steps:
       - name: Harden Runner 🛡️
-        uses: step-security/harden-runner@8d3c67de8e2fe68ef647c8db1e6a09f647780f40 # v2.19.0
+        uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # v2.20.1
         with:
           egress-policy: audit
 
       - name: Checkout repository 📥
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 1
@@ -42,7 +42,7 @@ jobs:
           private-key: ${{ secrets.CHITRANK_BOT_PRIVATE_KEY }}
 
       - name: Label PR 🏷️
-        uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b # v6.0.1
+        uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
         with:
           repo-token: '${{ steps.generate_token.outputs.token }}'
           sync-labels: true

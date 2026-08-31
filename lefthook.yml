@@ -9,7 +9,7 @@ pre-commit:
   commands:
     # 1. Block commits that contain secrets/credentials
     secrets:
-      run: gitleaks protect --staged --redact -v
+      run: if command -v gitleaks > /dev/null; then gitleaks protect --staged --redact -v; else echo "gitleaks not found, skipping secrets scan. Install with 'brew install gitleaks'"; fi
 
     # 2. TypeScript files - ESLint fix + Prettier format
     lint-ts:

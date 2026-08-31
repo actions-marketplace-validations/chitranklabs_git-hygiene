@@ -1,7 +1,6 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/index.ts', 'src/cli.ts'],
   format: ['esm'],
   dts: true,
   splitting: false,
@@ -9,5 +8,5 @@ export default defineConfig({
   clean: true,
   minify: true,
   shims: true,
-  target: 'node23',
+  target: 'node24',
 });

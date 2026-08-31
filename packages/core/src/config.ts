@@ -50,13 +50,13 @@ export async function resolveConfig(
     rules: userConfig.rules || {},
     types: userConfig.types || DEFAULT_CONFIG.types,
     ignoreBranches: userConfig.ignoreBranches || DEFAULT_CONFIG.ignoreBranches,
-    maxHeaderLength: userConfig.maxHeaderLength || DEFAULT_CONFIG.maxHeaderLength,
-    maxBodyLength: userConfig.maxBodyLength || DEFAULT_CONFIG.maxBodyLength,
-    minBodyLength: userConfig.minBodyLength || DEFAULT_CONFIG.minBodyLength,
-    typeCase: userConfig.typeCase || DEFAULT_CONFIG.typeCase,
-    scopeCase: userConfig.scopeCase || DEFAULT_CONFIG.scopeCase,
+    maxHeaderLength: userConfig.maxHeaderLength ?? DEFAULT_CONFIG.maxHeaderLength,
+    maxBodyLength: userConfig.maxBodyLength ?? DEFAULT_CONFIG.maxBodyLength,
+    minBodyLength: userConfig.minBodyLength ?? DEFAULT_CONFIG.minBodyLength,
+    typeCase: userConfig.typeCase ?? DEFAULT_CONFIG.typeCase,
+    scopeCase: userConfig.scopeCase ?? DEFAULT_CONFIG.scopeCase,
     allowEmptyScope: userConfig.allowEmptyScope ?? DEFAULT_CONFIG.allowEmptyScope,
-    subjectFullStop: userConfig.subjectFullStop || DEFAULT_CONFIG.subjectFullStop,
+    subjectFullStop: userConfig.subjectFullStop ?? DEFAULT_CONFIG.subjectFullStop,
     parserPreset: userConfig.parserPreset,
   };
 
@@ -103,8 +103,9 @@ export async function resolveConfig(
     }
   }
 
-  const typesPattern = mergedConfig.types.join('|');
-  const branchesPattern = mergedConfig.ignoreBranches.join('|');
+  const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const typesPattern = mergedConfig.types.map(escapeRegex).join('|');
+  const branchesPattern = mergedConfig.ignoreBranches.map(escapeRegex).join('|');
 
   const scopePattern = mergedConfig.allowEmptyScope ? '(\\([a-z0-9-]+\\))?' : '(\\([a-z0-9-]+\\))';
 
@@ -112,7 +113,7 @@ export async function resolveConfig(
     ...mergedConfig,
     patterns: {
       branch: new RegExp(`^(${branchesPattern})$|^(${typesPattern})/.+$`),
-      title: new RegExp(`^(${typesPattern})(!)?${scopePattern}: .+$`),
+      title: new RegExp(`^(${typesPattern})${scopePattern}(!)?:\\s.+$`),
     },
   };
 

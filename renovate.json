@@ -5,7 +5,7 @@
   "assignees": [],
   "gitAuthor": "Chitrank agnihotri <chitrank2050@gmail.com>",
   "baseBranchPatterns": ["main"],
-  "schedule": ["every weekend"],
+  "schedule": ["on the first day of the month"],
   "prBodyColumns": ["Package", "Change", "Age", "Confidence"],
   "packageRules": [
     {
@@ -32,7 +32,9 @@
   "prConcurrentLimit": 10,
   "prHourlyLimit": 2,
   "vulnerabilityAlerts": {
-    "enabled": true
+    "enabled": true,
+    "labels": ["security", "vulnerability"],
+    "schedule": ["at any time"]
   },
   "platformAutomerge": true
 }

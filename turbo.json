@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["eslint.config.mjs", ".prettierrc", "tsconfig.json"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -14,10 +15,18 @@
       "inputs": ["src/**/*.ts", "tests/**/*.ts"],
       "outputs": ["coverage/**"]
     },
-    "lint": {},
-    "lint:fix": {},
-    "format": {},
-    "format:check": {},
+    "lint": {
+      "inputs": ["src/**/*.ts"]
+    },
+    "lint:fix": {
+      "cache": false
+    },
+    "format": {
+      "cache": false
+    },
+    "format:check": {
+      "inputs": ["src/**/*.ts"]
+    },
     "dev": {
       "cache": false,
       "persistent": true

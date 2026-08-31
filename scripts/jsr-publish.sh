@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # =============================================================
 # JSR Local Test Publish Script 🦖
@@ -12,7 +13,7 @@
 # =============================================================
 
 VERSION=$1
-DRY_RUN_FLAG=$2
+DRY_RUN_FLAG="${2:-}"
 
 if [ -z "$VERSION" ]; then
   echo "❌ Error: Version is required (e.g. 0.4.0)"
@@ -64,19 +65,19 @@ for pkg in "${PACKAGES[@]}"; do
     
     # Check if deno is available, otherwise fallback to npx jsr
     if command -v deno >/dev/null 2>&1; then
-      CMD_BASE="deno publish"
+      CMD_BASE=("deno" "publish")
     else
       echo "   (Deno not found, falling back to npx jsr)"
-      CMD_BASE="npx jsr publish"
+      CMD_BASE=("npx" "jsr" "publish")
     fi
 
-    PUBLISH_CMD="$CMD_BASE --unstable-bare-node-builtins --no-check --allow-slow-types --allow-dirty --no-provenance"
-    
+    PUBLISH_CMD=("${CMD_BASE[@]}" --unstable-bare-node-builtins --no-check --allow-slow-types --allow-dirty --no-provenance)
+
     if [ "$DRY_RUN_FLAG" == "--dry-run" ]; then
       echo "   (Dry run mode enabled)"
-      (cd "$pkg" && $PUBLISH_CMD --dry-run)
+      (cd "$pkg" && "${PUBLISH_CMD[@]}" --dry-run)
     else
-      (cd "$pkg" && $PUBLISH_CMD)
+      (cd "$pkg" && "${PUBLISH_CMD[@]}")
     fi
 
     # 4. Restore original package.json
