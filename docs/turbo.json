@@ -3,7 +3,8 @@
   "tasks": {
     "build": {
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/assets/**"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "env": ["CLOUDFLARE_WEB_ANALYTICS_TOKEN", "VERCEL_ENV"]
     }
   }
 }

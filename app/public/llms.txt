@@ -4,5 +4,5 @@
 
 - [Website](https://githygiene.chitrankagnihotri.com/): Interactive sandbox and package overview.
 - [Changelog](https://githygiene.chitrankagnihotri.com/changelog): Release history.
-- [Documentation](https://github.com/chitranklabs/git-hygiene/tree/main/docs): Maintained guides and reference; separate Monoline Docs site.
+- [Documentation](https://docs.githygiene.chitrankagnihotri.com/): Maintained guides and reference; separate Monoline Docs site.
 - [Source](https://github.com/chitranklabs/git-hygiene): CLI, Core API and GitHub Action.

@@ -37,7 +37,7 @@
   ],
   "type": "module",
   "scripts": {
-    "prepare": "lefthook install",
+    "prepare": "if git rev-parse --git-dir >/dev/null 2>&1; then lefthook install; fi",
     "clean": "turbo clean && rm -rf .turbo coverage",
     "build": "turbo build && pnpm build:action",
     "build:action": "esbuild packages/cli/src/cli.ts --bundle --platform=node --target=node24 --format=esm --outfile=dist/action.js --minify",

@@ -12,7 +12,7 @@ const navLinks = [
   { label: 'Why Zero Deps', href: '/#benchmark' },
   { label: 'Integrations', href: '/#integrations' },
   { label: 'Core API', href: '/#core-api' },
-  { label: 'Docs', href: 'https://github.com/chitranklabs/git-hygiene/tree/main/docs' },
+  { label: 'Docs', href: 'https://docs.githygiene.chitrankagnihotri.com/' },
   { label: 'Changelog', href: '/changelog' },
 ];
 

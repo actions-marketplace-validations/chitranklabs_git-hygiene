@@ -1,5 +1,5 @@
 title: git-hygiene
-site: https://githygienedocs.chitrankagnihotri.com
+site: https://docs.githygiene.chitrankagnihotri.com
 base: /
 description: Validate Git branches, commit messages and pull request titles with one shared configuration.
 contentDirectory: ./content

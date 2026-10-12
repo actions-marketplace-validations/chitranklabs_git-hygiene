@@ -57,7 +57,7 @@
 
 ## Documentation
 
-Read the [handbook](docs/content/index.md) or the [documentation sources](https://github.com/chitranklabs/git-hygiene/tree/main/docs) for setup, integration guides and reference.
+Read the [handbook](docs/content/index.md) or the [documentation](https://docs.githygiene.chitrankagnihotri.com/) for setup, integration guides and reference.
 
 ## Technical Specification
 

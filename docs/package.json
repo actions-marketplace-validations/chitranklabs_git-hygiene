@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "monoline-docs build --config monoline-docs.yml",
-    "dev": "monoline-docs dev --config monoline-docs.yml",
+    "build": "monoline-docs build --config monoline-docs.config.mjs",
+    "dev": "monoline-docs dev --config monoline-docs.config.mjs",
     "clean": "rm -rf dist"
   },
   "devDependencies": {

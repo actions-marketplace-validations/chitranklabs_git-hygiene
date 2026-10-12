@@ -22,6 +22,7 @@ Next.js owns website routes, sitemap, metadata, security headers and revalidatio
 ## Documentation site
 
 Monoline Docs owns the handbook under `docs/`. Its CLI reads
+`docs/monoline-docs.config.mjs`, which loads the content settings from
 `docs/monoline-docs.yml`, builds `docs/content` and writes `docs/dist`.
 
 ```bash
@@ -30,7 +31,7 @@ pnpm --filter git-hygiene-docs dev
 ```
 
 Publish the complete `docs/dist` directory as a separate static site at
-`githygienedocs.chitrankagnihotri.com`. Monoline Docs generates the handbook's
+`docs.githygiene.chitrankagnihotri.com`. Monoline Docs generates the handbook's
 HTML, assets, search index, sitemap, robots file, Markdown exports and AI indexes.
 There are no Next.js rewrites or post-build output modifications.
 
@@ -50,10 +51,12 @@ builds do not load its beacon.
 Cloudflare supplies pageviews and real-user performance measurements while
 hosting stays on Vercel.
 
-The separate documentation hostname needs its own Cloudflare Web Analytics site
-registration. Configure its beacon through Monoline Docs' `integrations.scripts`
-using a local `/assets/*.js` integration once that public token is available.
-Do not reuse the website's token or inject analytics by rewriting generated HTML.
+Register `docs.githygiene.chitrankagnihotri.com` as a separate Cloudflare Web
+Analytics site. Set its public token as `CLOUDFLARE_WEB_ANALYTICS_TOKEN` in the
+**docs** Vercel project's Production environment, then redeploy. The supported
+Monoline Docs configuration passes it to `integrations.scripts` only in production.
+There is no hardcoded token, custom builder or generated-HTML rewriting. Without
+the variable, docs analytics stays off.
 
 After deployment, verify a single beacon loads on the website and check its
 Cloudflare dashboard. Browser privacy settings can block measurement. Remove
