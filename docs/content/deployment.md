@@ -42,8 +42,11 @@ URL after the handbook deployment has been verified.
 
 ## Cloudflare Web Analytics
 
-The Next.js website uses the public token registered for
-`githygiene.chitrankagnihotri.com`. Preview and local builds do not load its beacon.
+Set `NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN` in the website Vercel project's
+Production environment to the public beacon token registered for
+`githygiene.chitrankagnihotri.com`, then redeploy. There is no token fallback in
+source code. Without this variable the beacon is not loaded. Preview and local
+builds do not load its beacon.
 Cloudflare supplies pageviews and real-user performance measurements while
 hosting stays on Vercel.
 
