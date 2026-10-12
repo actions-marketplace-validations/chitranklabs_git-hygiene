@@ -1,0 +1,108 @@
+/* ─── DARK THEME (Default · Obsidian Titanium) ─── */
+:root,
+.dark,
+[data-theme='dark'] {
+  --background: oklch(13.5% 0.006 260);
+  --foreground: oklch(97% 0.003 240);
+
+  --surface: oklch(17% 0.008 260 / 0.75);
+  --surface-2: oklch(21% 0.01 260 / 0.85);
+  --surface-3: oklch(26% 0.012 260);
+  --surface-code: oklch(11.5% 0.006 260);
+
+  --card: oklch(17% 0.008 260 / 0.75);
+  --card-foreground: oklch(97% 0.003 240);
+
+  --popover: oklch(17% 0.008 260 / 0.95);
+  --popover-foreground: oklch(97% 0.003 240);
+
+  --primary: oklch(97% 0.003 240);
+  --primary-foreground: oklch(13.5% 0.006 260);
+
+  --secondary: oklch(21% 0.01 260 / 0.85);
+  --secondary-foreground: oklch(92% 0.005 240);
+
+  --muted: oklch(21% 0.01 260);
+  --muted-foreground: oklch(65% 0.008 240);
+
+  /* Precision Engineering Emerald (Restrained, high-contrast, non-neon) */
+  --accent: oklch(74% 0.145 160);
+  --accent-soft: oklch(74% 0.145 160 / 0.12);
+  --accent-foreground: oklch(11% 0.01 260);
+
+  --border: oklch(25% 0.008 260 / 0.85);
+  --border-strong: oklch(36% 0.012 260 / 0.9);
+  --input: oklch(25% 0.008 260 / 0.85);
+  --ring: oklch(74% 0.145 160);
+
+  --text: oklch(97% 0.003 240);
+  --text-primary: oklch(97% 0.003 240);
+  --text-secondary: oklch(74% 0.008 240);
+  --text-muted: oklch(52% 0.008 240);
+  --text-body: oklch(84% 0.006 240);
+
+  --code: oklch(11.5% 0.006 260);
+  --code-text: oklch(92% 0.005 240);
+  --button: oklch(21% 0.01 260);
+  --button-hover: oklch(27% 0.014 260);
+
+  --shadow-xs: 0 1px 2px oklch(5% 0.01 260 / 0.4);
+  --shadow-md: 0 8px 24px -4px oklch(5% 0.01 260 / 0.5);
+  --shadow-lg: 0 18px 42px -6px oklch(5% 0.01 260 / 0.65);
+
+  color-scheme: dark;
+}
+
+/* ─── LIGHT THEME (Crisp Alabaster) ─── */
+.light,
+[data-theme='light'] {
+  --background: oklch(98.5% 0.002 240);
+  --foreground: oklch(16% 0.01 240);
+
+  --surface: oklch(100% 0 0 / 0.85);
+  --surface-2: oklch(95% 0.006 240);
+  --surface-3: oklch(91% 0.008 240);
+  --surface-code: oklch(96% 0.005 240);
+
+  --card: oklch(100% 0 0 / 0.85);
+  --card-foreground: oklch(16% 0.01 240);
+
+  --popover: oklch(100% 0 0 / 0.95);
+  --popover-foreground: oklch(16% 0.01 240);
+
+  --primary: oklch(16% 0.01 240);
+  --primary-foreground: oklch(98.5% 0.002 240);
+
+  --secondary: oklch(95% 0.006 240);
+  --secondary-foreground: oklch(16% 0.01 240);
+
+  --muted: oklch(95% 0.006 240);
+  --muted-foreground: oklch(48% 0.01 240);
+
+  /* Deep Forest Emerald with >7.5:1 WCAG Contrast */
+  --accent: oklch(42% 0.15 155);
+  --accent-soft: oklch(42% 0.15 155 / 0.1);
+  --accent-foreground: oklch(100% 0 0);
+
+  --border: oklch(89% 0.005 240 / 0.85);
+  --border-strong: oklch(76% 0.01 240);
+  --input: oklch(89% 0.005 240 / 0.85);
+  --ring: oklch(42% 0.15 155);
+
+  --text: oklch(16% 0.01 240);
+  --text-primary: oklch(16% 0.01 240);
+  --text-secondary: oklch(34% 0.01 240);
+  --text-muted: oklch(52% 0.008 240);
+  --text-body: oklch(24% 0.01 240);
+
+  --code: oklch(95% 0.006 240);
+  --code-text: oklch(20% 0.02 240);
+  --button: oklch(95% 0.006 240);
+  --button-hover: oklch(91% 0.008 240);
+
+  --shadow-xs: 0 1px 2px oklch(20% 0.01 240 / 0.04);
+  --shadow-md: 0 8px 24px -4px oklch(20% 0.01 240 / 0.07);
+  --shadow-lg: 0 16px 36px -6px oklch(20% 0.01 240 / 0.12);
+
+  color-scheme: light;
+}

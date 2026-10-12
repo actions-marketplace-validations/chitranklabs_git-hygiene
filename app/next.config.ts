@@ -3,6 +3,16 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || '.next',
   trailingSlash: false,
+  skipTrailingSlashRedirect: true,
+  async rewrites() {
+    return {
+      afterFiles: [
+        { source: '/docs/', destination: '/docs/index.html' },
+        { source: '/docs/:path*', destination: '/docs/:path*/index.html' },
+        { source: '/llms-full.txt', destination: '/docs/llms-full.txt' },
+      ],
+    };
+  },
   async headers() {
     return [
       {

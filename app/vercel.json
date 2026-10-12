@@ -2,6 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "pnpm --dir .. install --frozen-lockfile",
-  "buildCommand": "pnpm --dir .. build",
-  "ignoreCommand": "[ \"$VERCEL_ENV\" != \"production\" ] && exit 0; git diff --quiet HEAD^ HEAD -- :/app :/packages :/scripts :/cliff.toml :/package.json :/pnpm-lock.yaml"
+  "buildCommand": "pnpm --dir .. --filter git-hygiene-app build",
+  "ignoreCommand": "sh \"$(git rev-parse --show-toplevel)/scripts/vercel-ignore.sh\""
 }

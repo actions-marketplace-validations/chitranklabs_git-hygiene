@@ -55,6 +55,10 @@
 | `app`                          | Private Next.js website                       | [App README](app/README.md)            |
 | `action.yml`, `dist/action.js` | Composite action and committed runtime bundle | [Action definition](action.yml)        |
 
+## Documentation
+
+Read the [handbook](docs/index.md) or the [published documentation](https://githygiene.chitrankagnihotri.com/docs/) for setup, integration guides and reference.
+
 ## Technical Specification
 
 - Runtime: Node.js 24+; Git for history-based commands.

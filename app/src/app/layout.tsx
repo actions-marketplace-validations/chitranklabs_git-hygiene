@@ -3,8 +3,7 @@ import type { Metadata } from "next"
 import { SiteFooter } from "@/src/components/site-footer"
 import { SiteHeader } from "@/src/components/site-header"
 import { ThemeProvider } from "@/src/components/theme-provider"
-import { UmamiAnalytics } from "@/src/components/umami-analytics"
-import { WebVitals } from "@/src/components/web-vitals"
+import { CloudflareAnalytics } from "@/src/components/cloudflare-analytics"
 import { monolineFontClassName } from "@/src/lib/fonts"
 import { fetchIdentity } from "@/src/lib/identity"
 import { siteUrl } from "@/src/lib/seo"
@@ -118,8 +117,7 @@ export default function RootLayout({
 						<SiteFooter />
 					</div>
 				</ThemeProvider>
-				<WebVitals />
-				{isProduction && <UmamiAnalytics />}
+				{isProduction && <CloudflareAnalytics />}
 			</body>
 		</html>
 	)

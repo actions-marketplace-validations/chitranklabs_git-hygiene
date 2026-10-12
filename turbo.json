@@ -7,7 +7,15 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "public/docs/**",
+        "public/llms.txt",
+        "public/llms-full.txt"
+      ],
+      "env": ["NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN", "VERCEL_ENV"]
     },
     "test": {
       "dependsOn": ["^build"],

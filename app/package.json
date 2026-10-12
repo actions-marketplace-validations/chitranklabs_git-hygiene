@@ -7,7 +7,7 @@
     "prebuild": "node ../scripts/generate-web-changelog.mjs && node scripts/sync-identity.mjs",
     "predev": "node ../scripts/generate-web-changelog.mjs && node scripts/sync-identity.mjs",
     "dev": "next dev --port 3005",
-    "build": "next build",
+    "build": "next build && node scripts/build-docs.mjs",
     "start": "next start",
     "clean": "rm -rf .next out",
     "test:seo": "node scripts/seo-integration-test.mjs"
@@ -25,6 +25,7 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@chitrank2050/monoline-docs": "^0.2.0",
     "@types/node": "^26.4.0",
     "@types/prismjs": "^1.26.6",
     "@types/react": "^19.2.18",

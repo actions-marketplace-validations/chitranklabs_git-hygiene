@@ -10,7 +10,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 ### Prerequisites
 
-- **Node.js**: v24 (Stable) or higher
+- **Node.js**: v24.14 or higher for the complete workspace build
 - **pnpm**: use the exact `packageManager` version in the root `package.json` (currently 11.25.0).
 
 ### Repository Structure
@@ -19,7 +19,8 @@ This is a monorepo managed with **pnpm workspaces** and **Turborepo**:
 
 - `packages/core`: 🧠 The validation engine, including configuration and Git-history access. See its [README](packages/core/README.md).
 - `packages/cli`: 🌊 The command-line interface. Built on top of core.
-- `app`: 🌐 Next.js documentation and interactive web application.
+- `app`: Next.js website and documentation build.
+- `docs`: Monoline Docs handbook, sharing the website theme and fonts.
 
 ### Local Setup
 
@@ -41,6 +42,8 @@ This is a monorepo managed with **pnpm workspaces** and **Turborepo**:
    ```bash
    pnpm build
    ```
+
+For website and handbook work, see the [development guide](docs/development.md) and [deployment guide](docs/deployment.md).
 
 ## Development Workflow
 

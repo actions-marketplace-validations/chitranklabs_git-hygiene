@@ -16,6 +16,10 @@
 
 `git-hygiene` is the published CLI package. It delegates validation and release recommendations to `@chitrank2050/git-hygiene-core`. The GitHub Action is distributed separately from the repository root.
 
+## Documentation
+
+Read the [handbook](../../docs/index.md) or the [published documentation](https://githygiene.chitrankagnihotri.com/docs/) for setup, integration guides and reference.
+
 ## Technical Specification
 
 - Requires Node.js 24+ and Git for current-branch detection and release recommendations.

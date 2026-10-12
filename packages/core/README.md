@@ -16,6 +16,10 @@
 
 `@chitrank2050/git-hygiene-core` is the published programmatic engine used by the CLI. Use it to integrate validation into Node.js tools without invoking a CLI process.
 
+## Documentation
+
+Read the [handbook](../../docs/index.md) or the [published documentation](https://githygiene.chitrankagnihotri.com/docs/) for setup, integration guides and reference.
+
 ## Technical Specification
 
 - Requires Node.js 24+; npm exports ESM JavaScript and TypeScript declarations.

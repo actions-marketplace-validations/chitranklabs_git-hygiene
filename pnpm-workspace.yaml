@@ -10,5 +10,5 @@ allowBuilds:
   esbuild: true
   lefthook: true
 minimumReleaseAgeExclude:
-  - '@chitrank2050/monoline-ui@0.3.0'
-  - '@chitrank2050/monoline-ui@0.5.0'
+  - '@chitrank2050/monoline-ui@0.3.0 || 0.5.0'
+  - '@chitrank2050/monoline-docs@0.2.0'

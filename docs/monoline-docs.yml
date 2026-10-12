@@ -1,0 +1,63 @@
+title: git-hygiene
+site: https://githygiene.chitrankagnihotri.com
+base: /docs/
+description: Validate Git branches, commit messages and pull request titles with one shared configuration.
+contentDirectory: .
+assetsDirectory: ../app/.docs-assets
+outDirectory: ../app/public/docs
+stylesheet: /assets/site.css
+appearance:
+  defaultMode: system
+  radius: 0.375
+  fonts:
+    body:
+      family: Geist
+    code:
+      family: JetBrains Mono
+seo:
+  titleTemplate: '%s | git-hygiene docs'
+  socialImage: /assets/social.png
+branding:
+  favicon: /assets/icon.png
+header:
+  links:
+    - label: Website
+      href: https://githygiene.chitrankagnihotri.com/
+    - label: GitHub
+      href: https://github.com/chitranklabs/git-hygiene
+footer:
+  text: Released under the MIT License.
+  links:
+    - label: Created by Chitrank Agnihotri
+      href: https://chitrankagnihotri.com
+    - label: Changelog
+      href: https://githygiene.chitrankagnihotri.com/changelog
+content:
+  copyPageLink: true
+  editLink:
+    href: https://github.com/chitranklabs/git-hygiene/edit/main/docs/{path}
+navigation:
+  - label: Introduction
+    href: /
+  - label: Quickstart
+    href: /getting-started
+  - label: Integrations
+    items:
+      - label: Git hooks
+        href: /guides/git-hooks
+      - label: GitHub Actions
+        href: /guides/github-actions
+  - label: Reference
+    items:
+      - label: Commands
+        href: /reference/cli
+      - label: Configuration
+        href: /reference/configuration
+      - label: Core API
+        href: /reference/core-api
+  - label: Troubleshooting
+    href: /troubleshooting
+  - label: Contributing
+    href: /development
+  - label: Website deployment
+    href: /deployment

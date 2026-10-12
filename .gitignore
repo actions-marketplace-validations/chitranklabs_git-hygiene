@@ -8,6 +8,9 @@ dist/*
 release-artifacts/
 *.tgz
 .next
+app/.docs-assets/
+app/public/docs/
+app/public/llms-full.txt
 out
 .vercel
 *.tsbuildinfo
