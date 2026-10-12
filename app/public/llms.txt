@@ -1,18 +1,8 @@
 # git-hygiene
 
-- [Website](https://githygiene.chitrankagnihotri.com/): Interactive sandbox.
+> Validate Git branches, commit messages and pull request titles with shared configuration.
+
+- [Website](https://githygiene.chitrankagnihotri.com/): Interactive sandbox and package overview.
 - [Changelog](https://githygiene.chitrankagnihotri.com/changelog): Release history.
-- [Source](https://github.com/chitranklabs/git-hygiene): Packages and action.
-
-Validate Git branches, commit messages and pull request titles with one shared configuration.
-
-- [Introduction](/docs/index.md): Use one configuration to validate Git branches, commit messages and pull request titles.
-- [Website deployment](/docs/deployment/index.md): Build the website and handbook on Vercel and configure Cloudflare Web Analytics.
-- [Contributing](/docs/development/index.md): Build the CLI, Core package and website locally and verify changes before contributing.
-- [Quickstart](/docs/getting-started/index.md): Install the CLI, validate a commit and branch, then connect checks to your workflow.
-- [Git hooks](/docs/guides/git-hooks/index.md): Validate commit-message files and branch names using Lefthook or Husky.
-- [GitHub Actions](/docs/guides/github-actions/index.md): Use the bundled action to check pull request metadata and recommend release bumps.
-- [Commands](/docs/reference/cli/index.md): CLI arguments, exit status and JSON output for branch, title, commit and bump checks.
-- [Configuration](/docs/reference/configuration/index.md): Configure allowed metadata and commitlint behavior through package.json.
-- [Core API](/docs/reference/core-api/index.md): Embed asynchronous validation and configuration resolution in Node.js tooling.
-- [Troubleshooting](/docs/troubleshooting/index.md): Diagnose hook, configuration, branch and release-history failures.
+- [Documentation](https://github.com/chitranklabs/git-hygiene/tree/main/docs): Maintained guides and reference; separate Monoline Docs site.
+- [Source](https://github.com/chitranklabs/git-hygiene): CLI, Core API and GitHub Action.

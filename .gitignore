@@ -8,9 +8,6 @@ dist/*
 release-artifacts/
 *.tgz
 .next
-app/.docs-assets/
-app/public/docs/
-app/public/llms-full.txt
 out
 .vercel
 *.tsbuildinfo
@@ -56,3 +53,6 @@ gitleaks.tar.gz
 .gemini/
 scratch/
 git-cliff/
+
+# Independent Monoline Docs output
+docs/dist/

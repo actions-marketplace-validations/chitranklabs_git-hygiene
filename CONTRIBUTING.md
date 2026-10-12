@@ -20,7 +20,7 @@ This is a monorepo managed with **pnpm workspaces** and **Turborepo**:
 - `packages/core`: 🧠 The validation engine, including configuration and Git-history access. See its [README](packages/core/README.md).
 - `packages/cli`: 🌊 The command-line interface. Built on top of core.
 - `app`: Next.js website and documentation build.
-- `docs`: Monoline Docs handbook, sharing the website theme and fonts.
+- `docs`: Independent Monoline Docs handbook, sharing the website theme tokens.
 
 ### Local Setup
 
@@ -43,7 +43,7 @@ This is a monorepo managed with **pnpm workspaces** and **Turborepo**:
    pnpm build
    ```
 
-For website and handbook work, see the [development guide](docs/development.md) and [deployment guide](docs/deployment.md).
+For website and handbook work, see the [development guide](docs/content/development.md) and [deployment guide](docs/content/deployment.md).
 
 ## Development Workflow
 

@@ -12,7 +12,7 @@
  *   - Anti-AI Craft: No neon glow halos, no fake chrome, genuine technical depth
  * ========================================================================== */
 
-@import '../styles/theme-tokens.css';
+@import '../../../assets/theme-tokens.css';
 
 /* ─── Typography & Foundations ─── */
 .font-sans {

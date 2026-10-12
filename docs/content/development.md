@@ -3,7 +3,7 @@ title: Contributing
 description: Build the CLI, Core package and website locally and verify changes before contributing.
 ---
 
-This repository contains two published packages and a private website. Its
+This repository contains two published packages, a private website and a separate handbook. Its
 Markdown handbook is built with the published Monoline Docs package.
 
 ## Set up the workspace
@@ -33,30 +33,32 @@ are documented in [CONTRIBUTING.md](https://github.com/chitranklabs/git-hygiene/
 The website and handbook are private application output, not files shipped in
 the CLI or Core npm tarballs.
 
-## Work on the website or handbook
+## Work on the website
 
 ```bash
 pnpm --filter git-hygiene-app dev
 ```
 
-This starts the landing-page development server on port `3005`. To inspect the
-handbook and website together, build and serve the production output:
+The Next.js development server runs on port `3005`. Its build and routes belong
+to `app/`; it does not generate or serve the handbook.
+
+## Work on the handbook
 
 ```bash
-pnpm --filter git-hygiene-app build
-pnpm --filter git-hygiene-app start
+pnpm --filter git-hygiene-docs build
+pnpm --filter git-hygiene-docs dev
 ```
 
-Open `http://127.0.0.1:3005/docs/` for the handbook. Rebuild after changing Markdown,
-configuration, theme tokens or fonts. This path intentionally verifies the same
-Next.js build served on Vercel.
+Monoline Docs owns preview, rendering, search and exports. Open the URL printed
+by its preview command. It needs no Next.js build or Vercel output directory.
 
 ## Keep the visual identity shared
 
-`app/src/styles/theme-tokens.css` owns the website's light and dark color values.
-The website imports it directly. The docs build derives `light-dark()` tokens
-from that file and reuses the website's compiled Geist and JetBrains Mono fonts.
-Change tokens there; do not maintain a second palette in `docs/`.
+`assets/theme-tokens.css` owns the light and dark website color values.
+The website imports it directly. Monoline Docs loads `assets/docs.css`, which
+imports those same tokens and adapts the muted-text token for the docs shell.
+Change the shared token source rather than maintaining a second palette.
+The handbook's typography is configured through Monoline Docs' appearance settings.
 
 ## Verify changes
 
@@ -68,7 +70,7 @@ pnpm --filter git-hygiene-app test:seo
 ```
 
 The repository build includes the action bundle. Tests and linting should match
-the files affected by your change. Website SEO checks use the production Next.js server and verify the handbook's discovery assets, links and metadata.
+the files affected by your change. Website SEO checks use the production Next.js server. The independent handbook build validates its content, links and configuration.
 
 ## Preserve changelog inputs
 
@@ -77,4 +79,4 @@ available. It retains the checked-in dataset when git-cliff is unavailable.
 Maintainers updating release history need git-cliff, Git history and tags; a
 successful website build alone does not prove the history was regenerated.
 
-See [Website deployment](deployment.md) for production settings and cutover steps.
+See [Website deployment](deployment.md) for independent deployment settings.

@@ -14,8 +14,7 @@ const LOCAL_URL = externalBaseUrl ?? `http://${HOST}:${PORT}`;
 
 const STARTUP_TIMEOUT_MS = 60_000;
 const EXPECTED_PATHS = ['/', '/changelog'].toSorted();
-const RESOURCE_PATHS = ['/docs/llms.txt', '/docs/llms-full.txt'];
-const EXPECTED_PATH_SET = new Set([...EXPECTED_PATHS, ...RESOURCE_PATHS]);
+const EXPECTED_PATH_SET = new Set(EXPECTED_PATHS);
 
 function decodeEntities(value) {
   return value
@@ -157,10 +156,7 @@ function validateStructuredData(jsonLd, pathname) {
   const canonicalUrl = new URL(pathname, `${SITE_URL}/`).href;
 
   const page = nodes.find(
-    node =>
-      hasSchemaType(node, 'CollectionPage') ||
-      hasSchemaType(node, 'WebPage') ||
-      (pathname.startsWith('/docs/') && hasSchemaType(node, 'Article')),
+    node => hasSchemaType(node, 'CollectionPage') || hasSchemaType(node, 'WebPage'),
   );
   assert.ok(page, `${pathname} should describe its canonical page in JSON-LD`);
   assert.equal(page.url, canonicalUrl, `${pathname} JSON-LD url should match its canonical URL`);
@@ -202,9 +198,7 @@ function validatePage(html, pathname, expectedSchemaTypes = []) {
   assert.equal(countElements(html, 'title'), 1, `${pathname} should contain exactly one title`);
   const title = extractElementText(html, 'title');
   assert.ok(
-    pathname.startsWith('/docs/')
-      ? title.length >= 10 && title.length <= 80
-      : title.length >= 50 && title.length <= 60,
+    title.length >= 50 && title.length <= 60,
     `${pathname} title should be 50-60 characters, received ${title.length}: "${title}"`,
   );
 
@@ -217,9 +211,7 @@ function validatePage(html, pathname, expectedSchemaTypes = []) {
   const descriptionTag = descriptionTags[0];
   const description = getAttribute(descriptionTag ?? '', 'content')?.trim() ?? '';
   assert.ok(
-    pathname.startsWith('/docs/')
-      ? description.length >= 40 && description.length <= 220
-      : description.length >= 150 && description.length <= 160,
+    description.length >= 150 && description.length <= 160,
     `${pathname} description should be 150-160 characters, received ${description.length}: "${description}"`,
   );
 
@@ -315,10 +307,10 @@ async function run() {
   if (!externalBaseUrl) {
     server = spawn(
       process.execPath,
-      ['node_modules/next/dist/bin/next', 'start', '--port', String(PORT)],
+      ['node_modules/next/dist/bin/next', 'start', '--hostname', HOST, '--port', String(PORT)],
       {
         cwd: appRoot,
-        env: { ...process.env, NODE_ENV: 'production', PORT: String(PORT) },
+        env: { ...process.env, NODE_ENV: 'production' },
         stdio: ['ignore', 'pipe', 'pipe'],
       },
     );
@@ -349,21 +341,14 @@ async function run() {
 
     assert.match(llmsText, /^# git-hygiene$/m, 'llms.txt should identify git-hygiene');
     assert.match(llmsText, /chitranklabs\/git-hygiene/, 'llms.txt should reference github repo');
-    for (const path of RESOURCE_PATHS)
-      assert.ok((await fetchText(path)).length > 100, `${path} should contain documentation`);
     console.log('✓ llms.txt validated');
 
     const sitemapLocs = extractLocs(sitemapXml);
-    const docsPaths = sitemapLocs
-      .map(loc => new URL(loc).pathname)
-      .filter(path => path.startsWith('/docs/'));
-    assert.ok(docsPaths.length >= 10, 'The root sitemap should include the complete handbook');
     assert.equal(
-      new Set(sitemapLocs).size,
       sitemapLocs.length,
-      'Sitemap should not contain duplicate URLs',
+      EXPECTED_PATHS.length,
+      `sitemap.xml should contain exactly ${EXPECTED_PATHS.length} URLs`,
     );
-    for (const path of docsPaths) EXPECTED_PATH_SET.add(path);
     for (const loc of sitemapLocs) {
       const url = new URL(loc);
       assert.equal(url.protocol, 'https:', `${loc} should use HTTPS`);
@@ -374,40 +359,15 @@ async function run() {
       );
       assert.ok(EXPECTED_PATH_SET.has(url.pathname), `${loc} should match a canonical route`);
     }
-    assert.equal(
-      (await fetchResponse('/missing-page')).status,
-      404,
-      'Missing URLs should return HTTP 404',
-    );
-    const docExport = await fetchText('/docs/getting-started/index.md');
-    assert.match(
-      docExport,
-      /npm install --save-dev @chitrank2050\/git-hygiene/,
-      'Copy Page export should preserve install commands',
-    );
-    assert.match(
-      await fetchText('/llms-full.txt'),
-      /getRecommendedBump/,
-      'AI exports should contain the real Core API',
-    );
-    assert.doesNotMatch(
-      await fetchText('/llms-full.txt'),
-      /import[\s\S]{0,100}analyzeReleaseBump/,
-      'AI exports should not teach a nonexistent API',
-    );
-    console.log('✓ sitemap.xml, Markdown exports and missing-page behavior validated');
+    console.log('✓ sitemap.xml validated');
 
     const pages = [];
-    for (const pathname of [...EXPECTED_PATHS, ...docsPaths]) {
+    for (const pathname of EXPECTED_PATHS) {
       const html = await fetchText(pathname);
       const expectedSchemaTypes =
         pathname === '/'
           ? ['WebSite', 'SoftwareSourceCode', 'WebPage']
-          : pathname.startsWith('/docs/')
-            ? pathname === '/docs/'
-              ? ['WebPage', 'WebSite']
-              : ['Article', 'BreadcrumbList']
-            : ['CollectionPage', 'BreadcrumbList'];
+          : ['CollectionPage', 'BreadcrumbList'];
       const metadata = validatePage(html, pathname, expectedSchemaTypes);
       pages.push(metadata);
       console.log(

@@ -18,7 +18,7 @@
 
 ## Documentation
 
-Read the [handbook](../../docs/index.md) or the [published documentation](https://githygiene.chitrankagnihotri.com/docs/) for setup, integration guides and reference.
+Read the [handbook](../../docs/content/index.md) or the [published documentation](https://githygiene.chitrankagnihotri.com/docs/) for setup, integration guides and reference.
 
 ## Technical Specification
 

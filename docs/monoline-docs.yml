@@ -1,11 +1,11 @@
 title: git-hygiene
-site: https://githygiene.chitrankagnihotri.com
-base: /docs/
+site: https://githygienedocs.chitrankagnihotri.com
+base: /
 description: Validate Git branches, commit messages and pull request titles with one shared configuration.
-contentDirectory: .
-assetsDirectory: ../app/.docs-assets
-outDirectory: ../app/public/docs
-stylesheet: /assets/site.css
+contentDirectory: ./content
+assetsDirectory: ../assets
+outDirectory: ./dist
+stylesheet: /assets/docs.css
 appearance:
   defaultMode: system
   radius: 0.375
@@ -16,9 +16,9 @@ appearance:
       family: JetBrains Mono
 seo:
   titleTemplate: '%s | git-hygiene docs'
-  socialImage: /assets/social.png
+  socialImage: /assets/banner.png
 branding:
-  favicon: /assets/icon.png
+  favicon: /assets/logo.png
 header:
   links:
     - label: Website
@@ -35,7 +35,7 @@ footer:
 content:
   copyPageLink: true
   editLink:
-    href: https://github.com/chitranklabs/git-hygiene/edit/main/docs/{path}
+    href: https://github.com/chitranklabs/git-hygiene/edit/main/docs/content/{path}
 navigation:
   - label: Introduction
     href: /

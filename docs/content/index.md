@@ -48,7 +48,7 @@ this handbook. Maintainers can use the [development guide](development.md) and
 ## Reading with an AI agent
 
 Give an agent a relevant guide URL or its **Copy Page** content. Generated
-[llms.txt](https://githygiene.chitrankagnihotri.com/docs/llms.txt) lists the guides;
-[llms-full.txt](https://githygiene.chitrankagnihotri.com/docs/llms-full.txt) contains
+`/llms.txt` lists the guides;
+`/llms-full.txt` contains
 all published reading content. Treat examples as reference, and verify commands
 against the installed git-hygiene version before executing them.

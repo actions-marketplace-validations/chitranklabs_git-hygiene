@@ -1,0 +1,14 @@
+{
+  "name": "git-hygiene-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "monoline-docs build --config monoline-docs.yml",
+    "dev": "monoline-docs dev --config monoline-docs.yml",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@chitrank2050/monoline-docs": "^0.2.0"
+  }
+}

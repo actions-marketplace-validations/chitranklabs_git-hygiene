@@ -12,7 +12,7 @@ const navLinks = [
   { label: 'Why Zero Deps', href: '/#benchmark' },
   { label: 'Integrations', href: '/#integrations' },
   { label: 'Core API', href: '/#core-api' },
-  { label: 'Docs', href: '/docs/' },
+  { label: 'Docs', href: 'https://github.com/chitranklabs/git-hygiene/tree/main/docs' },
   { label: 'Changelog', href: '/changelog' },
 ];
 
@@ -71,7 +71,7 @@ export function SiteHeader() {
               <Navbar.Link key={link.href} asChild>
                 {link.href.startsWith('/#') ||
                 link.href.startsWith('#') ||
-                link.href.startsWith('/docs/') ? (
+                link.href.startsWith('https://') ? (
                   <a href={link.href}>{link.label}</a>
                 ) : (
                   <Link href={link.href}>{link.label}</Link>
@@ -156,7 +156,7 @@ export function SiteHeader() {
               {navLinks.map(link =>
                 link.href.startsWith('/#') ||
                 link.href.startsWith('#') ||
-                link.href.startsWith('/docs/') ? (
+                link.href.startsWith('https://') ? (
                   <a
                     key={link.href}
                     href={link.href}

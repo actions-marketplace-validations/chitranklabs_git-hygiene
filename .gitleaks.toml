@@ -2,11 +2,11 @@
 useDefault = true
 
 # Cloudflare Web Analytics publishes this site identifier in every page's beacon.
-# It grants no account/API access. Keep the exception limited to this value and its two consumers.
+# It grants no account/API access. Keep the exception limited to this value and its website consumer.
 [[allowlists]]
 description = "Public git-hygiene Cloudflare Web Analytics site identifier"
 targetRules = ["generic-api-key"]
 condition = "AND"
 regexTarget = "secret"
 regexes = ['''^4acd7655f8804ea5bf6608b9c690451b$''']
-paths = ['''^app/(scripts/build-docs\.mjs|src/components/cloudflare-analytics\.tsx)$''']
+paths = ['''^app/src/components/cloudflare-analytics\.tsx$''']
