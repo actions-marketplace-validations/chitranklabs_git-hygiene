@@ -38,8 +38,9 @@ There are no Next.js rewrites or post-build output modifications.
 For a separate Vercel project, use `docs` as the root directory, the Other
 framework preset and the settings in `docs/vercel.json`. Configure the custom
 domain for this new project; do not move the website's existing domain.
-Update the website's Docs link from the repository to the live documentation
-URL after the handbook deployment has been verified.
+The production Vercel alias and the former documentation hostname redirect to
+`docs.githygiene.chitrankagnihotri.com` through project domain settings. Canonical
+URLs and the documentation sitemap use this hostname.
 
 ## Cloudflare Web Analytics
 
@@ -52,7 +53,7 @@ Cloudflare supplies pageviews and real-user performance measurements while
 hosting stays on Vercel.
 
 Register `docs.githygiene.chitrankagnihotri.com` as a separate Cloudflare Web
-Analytics site. Set its public token as `CLOUDFLARE_WEB_ANALYTICS_TOKEN` in the
+Analytics site. Set its public token as `NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN` in the
 **docs** Vercel project's Production environment, then redeploy. The supported
 Monoline Docs configuration passes it to `integrations.scripts` only in production.
 There is no hardcoded token, custom builder or generated-HTML rewriting. Without
