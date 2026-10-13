@@ -19,7 +19,7 @@ import { groupReleasesByMinor } from "@/src/lib/releases"
 
 const changelogTitle = "Release Changelog and Version History | git-hygiene"
 const changelogDescription =
-	"Read git-hygiene release notes for zero-dependency CLI updates, core parser optimizations, security provenance audits, and conventional commit features."
+	"Read git-hygiene release notes for CLI and Core updates, conventional commit validation, branch naming rules and GitHub Action integrations."
 
 export const metadata: Metadata = createPageMetadata({
 	title: changelogTitle,
@@ -45,11 +45,12 @@ export default async function ChangelogPage() {
 							title: changelogTitle,
 							description: changelogDescription,
 							path: "/changelog",
-							items: releases.map((release) => ({
+							items: releases.map(release => ({
 								name: `git-hygiene ${release.version ?? "Unreleased"}`,
-								path: `/changelog#release-${(
-									release.version ?? "unreleased"
-								).replace(/\./g, "-")}` as const,
+								path: `/changelog#release-${(release.version ?? "unreleased").replace(
+									/\./g,
+									"-",
+								)}` as const,
 							})),
 						}),
 						createBreadcrumbJsonLd([
@@ -60,12 +61,7 @@ export default async function ChangelogPage() {
 				}}
 			/>
 
-			<Container
-				as="main"
-				id="main-content"
-				tabIndex={-1}
-				className="max-w-4xl pt-ml-10 pb-ml-24"
-			>
+			<Container as="main" id="main-content" tabIndex={-1} className="max-w-4xl pt-ml-10 pb-ml-24">
 				{/* Header Section */}
 				<div className="mb-ml-12 border-b border-border pb-ml-8">
 					<SectionHead
@@ -97,9 +93,7 @@ export default async function ChangelogPage() {
 				{/* Bottom Navigation */}
 				<div className="mt-ml-16 pt-ml-8 border-t border-border flex items-center justify-between">
 					<Button asChild variant="secondary" size="sm">
-						<Link href="/">
-							← Return to Homepage
-						</Link>
+						<Link href="/">← Return to Homepage</Link>
 					</Button>
 					<Button asChild variant="secondary" size="sm">
 						<a

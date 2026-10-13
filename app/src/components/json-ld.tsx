@@ -35,13 +35,7 @@ export function getPersonJsonLd(identity: Identity) {
 		},
 		nationality: identity.nationality,
 		knowsAbout: identity.knowsAbout,
-		sameAs: [
-			identity.socials.linkedin,
-			identity.socials.github,
-			identity.websiteUrl,
-			"https://monolineui.chitrankagnihotri.com",
-			"https://githygiene.chitrankagnihotri.com",
-		],
+		sameAs: [identity.socials.linkedin, identity.socials.github, identity.websiteUrl],
 		mainEntityOfPage: {
 			"@id": `${identity.websiteUrl}/#webpage`,
 		},
@@ -55,7 +49,7 @@ export function getWebsiteJsonLd(identity: Identity | null, siteUrl: string) {
 		url: siteUrl,
 		name: "git-hygiene",
 		description:
-			"The ultimate zero-dependency metadata validator for modern Git workflows. Enforce conventional commits, branch naming patterns, and PR titles with native Node.js performance.",
+			"Validate conventional commits, branch names and pull request titles with shared configuration. Use git-hygiene in Git hooks, GitHub Actions or Node.js tooling.",
 		about: {
 			"@id": `${siteUrl}/#software-source-code`,
 		},
@@ -77,7 +71,7 @@ export function getWebsiteJsonLd(identity: Identity | null, siteUrl: string) {
 export function getSoftwareSourceCodeJsonLd(
 	identity: Identity | null,
 	siteUrl: string,
-	version: string
+	version: string,
 ) {
 	const jsonLd: Record<string, unknown> = {
 		"@type": "SoftwareSourceCode",
@@ -85,7 +79,7 @@ export function getSoftwareSourceCodeJsonLd(
 		name: "git-hygiene",
 		alternateName: "@chitrank2050/git-hygiene",
 		description:
-			"The ultimate zero-dependency metadata validator for modern Git workflows. Built for Node.js 24+ using native TypeScript type-stripping for microsecond startup times.",
+			"Validate conventional commits, branch names and pull request titles with shared configuration. Use git-hygiene in Git hooks, GitHub Actions or Node.js tooling.",
 		url: siteUrl,
 		codeRepository: "https://github.com/chitranklabs/git-hygiene",
 		programmingLanguage: ["TypeScript", "JavaScript"],
@@ -108,7 +102,7 @@ export function getSoftwareSourceCodeJsonLd(
 			"conventional commits",
 			"branch naming",
 			"git hooks",
-			"zero dependency",
+			"commit validation",
 			"commitlint alternative",
 			"github action",
 		],
@@ -121,7 +115,8 @@ export function getSoftwareSourceCodeJsonLd(
 				alternateName: "@chitrank2050/monoline-ui",
 				url: "https://monolineui.chitrankagnihotri.com",
 				codeRepository: "https://github.com/chitranklabs/monoline-ui",
-				description: "A monochrome-first React 19 component library for personal sites, portfolios, and documentation.",
+				description:
+					"A monochrome-first React component library for personal sites, portfolios, and documentation.",
 			},
 			{
 				"@type": "WebSite",
@@ -176,11 +171,7 @@ export function createCollectionPageJsonLd({
 	}
 }
 
-export function createWebPageJsonLd({
-	title,
-	description,
-	path,
-}: PageJsonLdInput) {
+export function createWebPageJsonLd({ title, description, path }: PageJsonLdInput) {
 	const url = absoluteUrl(path)
 
 	return {
@@ -196,7 +187,7 @@ export function createWebPageJsonLd({
 }
 
 function serializeJsonLd<T>(data: T) {
-	return JSON.stringify(data).replace(/[<\u2028\u2029]/g, (char) => {
+	return JSON.stringify(data).replace(/[<\u2028\u2029]/g, char => {
 		switch (char) {
 			case "<":
 				return "\\u003c"

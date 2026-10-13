@@ -1,5 +1,7 @@
 ---
 title: Troubleshooting
+navTitle: Troubleshooting
+seoTitle: Troubleshoot git-hygiene hooks and validation failures
 description: Diagnose hook, configuration, branch and release-history failures.
 ---
 

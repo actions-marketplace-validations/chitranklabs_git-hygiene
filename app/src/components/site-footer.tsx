@@ -101,7 +101,7 @@ export async function SiteFooter() {
 					<span className="text-text">git-hygiene</span>
 				</Link>
 			}
-			description="Zero-dependency metadata validator for modern Git workflows. Built for Node.js 24+ with native TypeScript performance. MIT licensed."
+			description="Validate commits, branches and pull request titles with one shared configuration. CLI, Core API and GitHub Action. MIT licensed."
 			status={
 				<Footer.Status>
 					{release.version} · <span className="capitalize">{release.date}</span>

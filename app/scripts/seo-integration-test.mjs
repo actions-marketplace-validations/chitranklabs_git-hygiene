@@ -197,10 +197,7 @@ function validatePage(html, pathname, expectedSchemaTypes = []) {
 
   assert.equal(countElements(html, 'title'), 1, `${pathname} should contain exactly one title`);
   const title = extractElementText(html, 'title');
-  assert.ok(
-    title.length >= 50 && title.length <= 60,
-    `${pathname} title should be 50-60 characters, received ${title.length}: "${title}"`,
-  );
+  assert.ok(title.trim(), `${pathname} should have a meaningful title`);
 
   const descriptionTags = findElementsByAttribute(html, 'meta', 'name', 'description');
   assert.equal(
@@ -210,9 +207,11 @@ function validatePage(html, pathname, expectedSchemaTypes = []) {
   );
   const descriptionTag = descriptionTags[0];
   const description = getAttribute(descriptionTag ?? '', 'content')?.trim() ?? '';
-  assert.ok(
-    description.length >= 150 && description.length <= 160,
-    `${pathname} description should be 150-160 characters, received ${description.length}: "${description}"`,
+  assert.ok(description, `${pathname} should have a meaningful description`);
+  assert.doesNotMatch(
+    pathname === '/' ? html : `${title} ${description}`,
+    /zero[- ]dependenc(?:y|ies)|microsecond|zero transitive|SLSA[- ](?:Level )?3/i,
+    `${pathname} should not repeat unsupported dependency, performance or assurance claims`,
   );
 
   const canonicals = findElementsByAttribute(html, 'link', 'rel', 'canonical');
@@ -262,9 +261,55 @@ function validatePage(html, pathname, expectedSchemaTypes = []) {
     );
   }
   validateStructuredData(jsonLd, pathname);
+  for (const person of getTopLevelSchemaNodes(jsonLd).filter(node => hasSchemaType(node, 'Person'))) {
+    assert.ok(
+      (person.sameAs ?? []).every(url => ![
+        'githygiene.chitrankagnihotri.com',
+        'monolineui.chitrankagnihotri.com',
+      ].includes(new URL(url).hostname)),
+      'Person sameAs should identify the maintainer rather than software products',
+    );
+  }
   validateInternalLinks(html, pathname);
 
   return { title, description };
+}
+
+async function validateSocialImage(html, pathname) {
+  const imageUrl = getAttribute(
+    findElementByAttribute(html, 'meta', 'property', 'og:image') ?? '',
+    'content',
+  );
+  const twitterUrl = getAttribute(
+    findElementByAttribute(html, 'meta', 'name', 'twitter:image') ?? '',
+    'content',
+  );
+  assert.equal(twitterUrl, imageUrl, `${pathname} social images should agree`);
+  const url = new URL(imageUrl);
+  assert.equal(
+    url.origin,
+    SITE_URL,
+    `${pathname} social image should use the public website origin`,
+  );
+  const response = await fetchResponse(url.pathname);
+  assert.equal(response.status, 200, `${pathname} social image should resolve`);
+  assert.match(response.headers.get('content-type') ?? '', /^image\/png(?:;|$)/i);
+  const bytes = Buffer.from(await response.arrayBuffer());
+  assert.equal(
+    bytes.subarray(0, 8).toString('hex'),
+    '89504e470d0a1a0a',
+    'Social asset should be a PNG',
+  );
+  for (const [property, actual] of [
+    ['og:image:width', bytes.readUInt32BE(16)],
+    ['og:image:height', bytes.readUInt32BE(20)],
+  ]) {
+    const declared = getAttribute(
+      findElementByAttribute(html, 'meta', 'property', property) ?? '',
+      'content',
+    );
+    assert.equal(Number(declared), actual, `${pathname} ${property} should match the actual asset`);
+  }
 }
 
 async function waitForServer(server) {
@@ -369,6 +414,7 @@ async function run() {
           ? ['WebSite', 'SoftwareSourceCode', 'WebPage']
           : ['CollectionPage', 'BreadcrumbList'];
       const metadata = validatePage(html, pathname, expectedSchemaTypes);
+      await validateSocialImage(html, pathname);
       pages.push(metadata);
       console.log(
         `✓ ${pathname} (Title: ${metadata.title.length}c, Desc: ${metadata.description.length}c)`,

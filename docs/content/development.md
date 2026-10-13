@@ -1,5 +1,7 @@
 ---
 title: Contributing
+navTitle: Contributing
+seoTitle: Contribute to git-hygiene CLI, Core and website
 description: Build the CLI, Core package and website locally and verify changes before contributing.
 ---
 

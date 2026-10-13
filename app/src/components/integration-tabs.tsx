@@ -26,7 +26,7 @@ pre-push:
 		title: "Husky",
 		badge: "Classic",
 		filename: ".husky/commit-msg",
-		description: "Zero-dependency git hook scripts for modern NPM/PNPM workspaces.",
+		description: "Run git-hygiene from local Git hooks in npm or pnpm workspaces.",
 		code: `# .husky/commit-msg
 npx @chitrank2050/git-hygiene commit $1
 

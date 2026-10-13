@@ -1,5 +1,7 @@
 ---
 title: Introduction
+navTitle: Introduction
+seoTitle: Validate commits, branches and pull request titles
 description: Use one configuration to validate Git branches, commit messages and pull request titles.
 ---
 

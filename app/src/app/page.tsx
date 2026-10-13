@@ -22,9 +22,9 @@ import { siteUrl } from '@/src/lib/seo';
 
 import pkg from '@/package.json';
 
-const homeTitle = 'git-hygiene - Zero-Dependency Git Metadata Validator';
+const homeTitle = 'git-hygiene - Commits, Branches and PR Title Validation';
 const homeDescription =
-  'Enforce conventional commits, branch naming patterns, and PR titles with native Node.js 24+ type-stripping speed. Zero dependencies, pure native performance.';
+  'Validate conventional commits, branch names and pull request titles with shared configuration. Use git-hygiene in Git hooks, GitHub Actions or Node.js tooling.';
 
 export const metadata: Metadata = createPageMetadata({
   title: homeTitle,
@@ -33,30 +33,24 @@ export const metadata: Metadata = createPageMetadata({
   absoluteTitle: true,
 });
 
-const benchmarks = [
+const integrations = [
   {
-    metric: 'Cold Startup Latency',
-    hygiene: '< 5 ms',
-    traditional: '~220 ms',
-    note: 'Native Node.js 24+ type-stripping execution with microsecond CLI response.',
+    metric: 'Local Git hooks',
+    hygiene: 'CLI package',
+    setup: 'Install with npm or pnpm',
+    note: 'Validate commit messages and branch names through Lefthook or Husky.',
   },
   {
-    metric: 'Runtime Dependencies',
-    hygiene: '0 packages',
-    traditional: '38+ packages',
-    note: 'Pure native Node.js built-ins. Zero transitive dependency attack surface.',
+    metric: 'Pull request checks',
+    hygiene: 'Bundled GitHub Action',
+    setup: 'No npm install step',
+    note: 'Check PR titles and branches using your repository configuration.',
   },
   {
-    metric: 'Supply Chain Security',
-    hygiene: 'SLSA Level 3',
-    traditional: 'Unverified',
-    note: '100% SHA-pinned GitHub workflows with OpenSSF & Zizmor security audits.',
-  },
-  {
-    metric: 'Multi-Registry Distribution',
-    hygiene: 'NPM · JSR · Action',
-    traditional: 'NPM only',
-    note: 'TypeScript-native distribution on JSR and automated GitHub Marketplace Action.',
+    metric: 'Custom tooling',
+    hygiene: 'Core API',
+    setup: 'Install Core package',
+    note: 'Embed asynchronous validation and configuration resolution in Node.js tools.',
   },
 ];
 
@@ -72,7 +66,7 @@ const distributionPackages = [
     name: 'JSR Registry',
     package: '@chitrank2050/git-hygiene',
     href: 'https://jsr.io/@chitrank2050/git-hygiene',
-    description: 'TypeScript-native package with zero build step for Deno and Node 24+ runtimes.',
+    description: 'TypeScript package distributed through JSR for supported runtimes.',
     badge: 'TypeScript',
   },
   {
@@ -101,9 +95,9 @@ const keyPillars = [
   },
   {
     number: '02',
-    title: 'Instant Native Execution',
+    title: 'Node.js CLI and Core API',
     description:
-      'Leverages Node.js 24+ type-stripping (node --experimental-strip-types). Microsecond cold starts without heavy CLI frameworks like yargs or commander.',
+      'Run the published CLI on Node.js 24+, or import the asynchronous Core API into your own developer tooling.',
   },
   {
     number: '03',
@@ -151,20 +145,20 @@ export default async function HomePage() {
             </span>
             <span className="text-border-strong font-mono text-xs select-none shrink-0">/</span>
             <span className="font-mono text-3xs sm:text-2xs font-medium text-text-muted uppercase tracking-[0.06em] truncate">
-              Node.js 24+ Native · Zero Dependencies
+              Node.js 24+ · CLI, Core and Action
             </span>
           </div>
 
           {/* High-Conviction Product Headline (Roman, tight optical tracking, no AI accent highlight) */}
           <h1 className="display-title font-sans text-text text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[-0.035em] leading-[1.06]">
-            Zero-dependency Git metadata validation. Engineered for microsecond CI performance.
+            Validate commits, branches and pull request titles.
           </h1>
 
           {/* Problem & Value Prop Subtitle */}
           <p className="subheading mt-4 sm:mt-ml-5 text-text-secondary text-base sm:text-lg md:text-xl font-normal leading-relaxed max-w-2xl mx-auto font-sans tracking-[-0.012em]">
-            Enforce Conventional Commits, branch naming policies, and PR titles with native Node.js
-            24+ type-stripping speed. Pure built-ins, zero transitive attack surface, SLSA Level 3
-            provenance.
+            Use one repository configuration for Conventional Commits, branch naming policies and
+            pull request titles. Run checks in local Git hooks, GitHub Actions or your own Node.js
+            tools.
           </p>
 
           {/* Action Buttons */}
@@ -192,35 +186,35 @@ export default async function HomePage() {
           <div className="mt-8 sm:mt-ml-12 gh-spec-strip">
             <div className="gh-spec-item">
               <strong className="block text-xl sm:text-2xl font-bold text-text font-mono tabular-nums tracking-tight">
-                0
+                CLI
               </strong>
               <span className="text-3xs uppercase tracking-[0.06em] text-accent font-semibold font-mono">
-                Runtime Packages
+                Local Git Hooks
               </span>
               <p className="text-3xs text-text-muted leading-tight font-sans mt-0.5">
-                Pure Node.js built-ins. Zero transitive dependency attack surface.
+                Install the CLI with its runtime dependencies for commit and branch checks.
               </p>
             </div>
             <div className="gh-spec-item">
               <strong className="block text-xl sm:text-2xl font-bold text-text font-mono tabular-nums tracking-tight">
-                &lt; 5 ms
+                Core API
               </strong>
               <span className="text-3xs uppercase tracking-[0.06em] text-accent font-semibold font-mono">
-                Cold Startup
+                Custom Tooling
               </span>
               <p className="text-3xs text-text-muted leading-tight font-sans mt-0.5">
-                Native Node 24+ type-stripping execution without transpilation overhead.
+                Import asynchronous validation into your Node.js tools.
               </p>
             </div>
             <div className="gh-spec-item">
               <strong className="block text-xl sm:text-2xl font-bold text-text font-mono tabular-nums tracking-tight">
-                SLSA-3
+                Action
               </strong>
               <span className="text-3xs uppercase tracking-[0.06em] text-accent font-semibold font-mono">
-                Supply Chain
+                Pull Requests
               </span>
               <p className="text-3xs text-text-muted leading-tight font-sans mt-0.5">
-                100% SHA-pinned workflows with OpenSSF & Zizmor security audits.
+                Use the bundled GitHub Action without an npm install step.
               </p>
             </div>
             <div className="gh-spec-item">
@@ -254,9 +248,9 @@ export default async function HomePage() {
         {/* ── ARCHITECTURE & TELEMETRY COMPARISON MATRIX ── */}
         <section id="benchmark" className="mt-ml-24 pt-ml-8 border-t border-border scroll-mt-24">
           <SectionHead
-            eyebrow="Architecture & Telemetry"
-            title="Engineered for microsecond execution and zero bloat."
-            lede="Why install dozens of transitive packages just to validate a string? git-hygiene is built purely on Node.js built-in APIs."
+            eyebrow="Workflow Integrations"
+            title="Choose where to enforce your Git metadata rules."
+            lede="The CLI and Core packages have runtime dependencies. The bundled GitHub Action runs without a separate npm install."
             size="sm"
             level={2}
           />
@@ -266,22 +260,20 @@ export default async function HomePage() {
               <table className="w-full min-w-[620px] text-left font-mono text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-border bg-surface-2/60 text-text-muted text-3xs uppercase tracking-[0.08em]">
-                    <th className="py-3 px-4 sm:px-6 font-semibold whitespace-nowrap">
-                      Engineering Metric
-                    </th>
+                    <th className="py-3 px-4 sm:px-6 font-semibold whitespace-nowrap">Workflow</th>
                     <th className="py-3 px-4 sm:px-6 font-bold text-accent whitespace-nowrap">
-                      git-hygiene (Native)
+                      Integration
                     </th>
                     <th className="py-3 px-4 sm:px-6 font-semibold text-text-muted whitespace-nowrap">
-                      Husky + Commitlint (Traditional)
+                      Setup
                     </th>
                     <th className="py-3 px-4 sm:px-6 font-semibold hidden md:table-cell">
-                      Architectural Benefit
+                      What it checks
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/60">
-                  {benchmarks.map(b => (
+                  {integrations.map(b => (
                     <tr key={b.metric} className="hover:bg-surface-2/40 transition-colors">
                       <td className="py-3.5 px-4 sm:px-6 font-semibold text-text whitespace-nowrap">
                         {b.metric}
@@ -292,8 +284,8 @@ export default async function HomePage() {
                           <span>{b.hygiene}</span>
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 sm:px-6 text-text-muted line-through opacity-80 whitespace-nowrap">
-                        {b.traditional}
+                      <td className="py-3.5 px-4 sm:px-6 text-text-muted whitespace-nowrap">
+                        {b.setup}
                       </td>
                       <td className="py-3.5 px-4 sm:px-6 font-sans text-xs text-text-secondary hidden md:table-cell leading-relaxed">
                         {b.note}

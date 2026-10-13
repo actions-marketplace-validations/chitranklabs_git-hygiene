@@ -1,5 +1,7 @@
 ---
 title: Git hooks
+navTitle: Git hooks
+seoTitle: Validate commits and branches with Lefthook or Husky
 description: Validate commit-message files and branch names using Lefthook or Husky.
 ---
 

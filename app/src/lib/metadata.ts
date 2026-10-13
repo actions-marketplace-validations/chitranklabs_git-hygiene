@@ -4,9 +4,9 @@ import { siteUrl } from './seo';
 
 export const socialImage = {
   url: new URL('/git-hygiene-og.png', `${siteUrl}/`).toString(),
-  width: 1280,
-  height: 640,
-  alt: 'git-hygiene zero-dependency metadata validator for modern Git workflows',
+  width: 1024,
+  height: 800,
+  alt: 'git-hygiene commit, branch and pull request title validator',
 } as const;
 
 interface PageMetadataInput {

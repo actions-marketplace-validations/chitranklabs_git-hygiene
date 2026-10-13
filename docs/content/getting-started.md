@@ -1,5 +1,7 @@
 ---
 title: Quickstart
+navTitle: Quickstart
+seoTitle: Install git-hygiene and validate your first commit
 description: Install the CLI, validate a commit and branch, then connect checks to your workflow.
 ---
 

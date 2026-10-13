@@ -1,5 +1,7 @@
 ---
 title: GitHub Actions
+navTitle: GitHub Actions
+seoTitle: Validate pull request metadata with GitHub Actions
 description: Use the bundled action to check pull request metadata and recommend release bumps.
 ---
 

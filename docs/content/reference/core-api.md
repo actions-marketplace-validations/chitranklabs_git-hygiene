@@ -1,5 +1,7 @@
 ---
 title: Core API
+navTitle: Core API
+seoTitle: git-hygiene Core API for Node.js tooling
 description: Embed asynchronous validation and configuration resolution in Node.js tooling.
 ---
 

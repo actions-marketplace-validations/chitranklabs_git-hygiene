@@ -2,7 +2,7 @@
 #  git-hygiene
 #  https://githygiene.chitrankagnihotri.com
 #
-#  The zero-dependency metadata validator for modern Git workflows.
+#  Validate commits, branches and pull request titles with shared configuration.
 #
 #  -----
 #  Built by Chitrank Agnihotri

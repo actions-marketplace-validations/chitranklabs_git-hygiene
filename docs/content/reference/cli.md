@@ -1,5 +1,7 @@
 ---
 title: Commands
+navTitle: Commands
+seoTitle: git-hygiene CLI commands and JSON output
 description: CLI arguments, exit status and JSON output for branch, title, commit and bump checks.
 ---
 

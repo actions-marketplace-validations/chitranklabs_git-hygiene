@@ -1,5 +1,7 @@
 ---
 title: Deployment
+navTitle: Deployment
+seoTitle: Deploy the git-hygiene website and documentation
 description: Deploy the Next.js website and the independent Monoline Docs handbook separately.
 ---
 

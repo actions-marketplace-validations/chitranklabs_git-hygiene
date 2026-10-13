@@ -18,9 +18,9 @@ export async function generateMetadata(): Promise<Metadata> {
 		? { name: identity.name, url: identity.websiteUrl }
 		: { name: "Chitrank Agnihotri", url: "https://chitrankagnihotri.com" }
 
-	const title = "git-hygiene - Zero-Dependency Git Metadata Validator"
+	const title = "git-hygiene - Commits, Branches and PR Title Validation"
 	const description =
-		"Enforce conventional commits, branch naming patterns, and PR titles with native Node.js 24+ type-stripping speed. Zero dependencies, pure native performance."
+		"Validate conventional commits, branch names and pull request titles with shared configuration. Use git-hygiene in Git hooks, GitHub Actions or Node.js tooling."
 
 	return {
 		metadataBase: new URL(siteUrl),
@@ -35,11 +35,11 @@ export async function generateMetadata(): Promise<Metadata> {
 			"conventional commits",
 			"branch naming",
 			"git hooks",
-			"zero dependency",
+			"commit validation",
 			"commitlint alternative",
 			"github actions",
 			"node 24",
-			"type stripping",
+			"pull request validation",
 		],
 		authors: [author],
 		creator: author.name,

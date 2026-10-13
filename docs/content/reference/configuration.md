@@ -1,5 +1,7 @@
 ---
 title: Configuration
+navTitle: Configuration
+seoTitle: Configure commit validation and branch naming rules
 description: Configure allowed metadata and commitlint behavior through package.json.
 ---
 
