@@ -17,6 +17,15 @@ appearance:
 seo:
   titleTemplate: '%s | git-hygiene docs'
   socialImage: /assets/banner.png
+  socialImageAlt: git-hygiene — commit, branch and pull request title validation
+  author: &docsOwner
+    type: Person
+    name: Chitrank Agnihotri
+    url: https://chitrankagnihotri.com
+    sameAs:
+      - https://github.com/chitrank2050
+      - https://www.linkedin.com/in/chitrank-agnihotri/
+  publisher: *docsOwner
 branding:
   favicon: /assets/logo.png
 header:
