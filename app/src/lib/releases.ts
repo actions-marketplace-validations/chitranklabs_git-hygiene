@@ -3,7 +3,7 @@ import {
   type GitCliffCommit,
   compactGitCliffReleases,
 } from '@chitrank2050/monoline-ui/changelog';
-import pkg from '@/package.json';
+import pkg from '../../../package.json';
 import changelogData from '@/src/lib/changelog.json';
 
 export interface ReleaseInfo {

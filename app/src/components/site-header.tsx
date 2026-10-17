@@ -9,7 +9,7 @@ import { ThemeControl } from './theme-control';
 
 const navLinks = [
   { label: 'Sandbox', href: '/#sandbox' },
-  { label: 'Integrations', href: '/#benchmark' },
+  { label: 'Workflows', href: '/#benchmark' },
   { label: 'Integrations', href: '/#integrations' },
   { label: 'Core API', href: '/#core-api' },
   { label: 'Docs', href: 'https://docs.githygiene.chitrankagnihotri.com/' },

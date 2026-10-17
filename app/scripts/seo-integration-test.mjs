@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import product from '../../package.json' with { type: 'json' };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.resolve(__dirname, '..');
@@ -15,6 +16,7 @@ const LOCAL_URL = externalBaseUrl ?? `http://${HOST}:${PORT}`;
 const STARTUP_TIMEOUT_MS = 60_000;
 const EXPECTED_PATHS = ['/', '/changelog'].toSorted();
 const EXPECTED_PATH_SET = new Set(EXPECTED_PATHS);
+const pageHtmlByPath = new Map();
 
 function decodeEntities(value) {
   return value
@@ -154,6 +156,14 @@ function extractLocs(xml) {
 function validateStructuredData(jsonLd, pathname) {
   const nodes = getTopLevelSchemaNodes(jsonLd);
   const canonicalUrl = new URL(pathname, `${SITE_URL}/`).href;
+  if (pathname === '/') {
+    const software = nodes.find(node => hasSchemaType(node, 'SoftwareSourceCode'));
+    assert.equal(
+      software?.version,
+      product.version,
+      'Product JSON-LD must use the release version',
+    );
+  }
 
   const page = nodes.find(
     node => hasSchemaType(node, 'CollectionPage') || hasSchemaType(node, 'WebPage'),
@@ -167,8 +177,6 @@ function validateInternalLinks(html, pathname) {
     const href = getAttribute(tag, 'href')?.trim();
     assert.ok(href, `${pathname} should not contain an anchor without an href`);
 
-    if (href.startsWith('#')) continue;
-
     const target = new URL(href, new URL(pathname, `${SITE_URL}/`));
     if (target.origin !== new URL(SITE_URL).origin) continue;
 
@@ -181,6 +189,17 @@ function validateInternalLinks(html, pathname) {
       EXPECTED_PATH_SET.has(target.pathname),
       `${pathname} internal link ${href} should target a canonical sitemap path`,
     );
+    if (target.hash) {
+      const targetHtml = pageHtmlByPath.get(target.pathname);
+      const ids = [...targetHtml.matchAll(/<[a-zA-Z][^>]*>/g)].map(match =>
+        getAttribute(match[0], 'id'),
+      );
+      assert.equal(
+        ids.filter(id => id === decodeURIComponent(target.hash.slice(1))).length,
+        1,
+        `${pathname} internal fragment ${href} should resolve to exactly one target`,
+      );
+    }
   }
 }
 
@@ -189,6 +208,10 @@ function validatePage(html, pathname, expectedSchemaTypes = []) {
 
   assert.equal(countElements(html, 'main'), 1, `${pathname} should have one main`);
   assert.equal(countElements(html, 'h1'), 1, `${pathname} should have one h1`);
+  const ids = [...html.matchAll(/<[a-zA-Z][^>]*>/g)]
+    .map(match => getAttribute(match[0], 'id'))
+    .filter(Boolean);
+  assert.equal(new Set(ids).size, ids.length, `${pathname} should have unique IDs`);
   validateHeadingOrder(html, pathname);
   validateImages(html, pathname);
 
@@ -261,12 +284,16 @@ function validatePage(html, pathname, expectedSchemaTypes = []) {
     );
   }
   validateStructuredData(jsonLd, pathname);
-  for (const person of getTopLevelSchemaNodes(jsonLd).filter(node => hasSchemaType(node, 'Person'))) {
+  for (const person of getTopLevelSchemaNodes(jsonLd).filter(node =>
+    hasSchemaType(node, 'Person'),
+  )) {
     assert.ok(
-      (person.sameAs ?? []).every(url => ![
-        'githygiene.chitrankagnihotri.com',
-        'monolineui.chitrankagnihotri.com',
-      ].includes(new URL(url).hostname)),
+      (person.sameAs ?? []).every(
+        url =>
+          !['githygiene.chitrankagnihotri.com', 'monolineui.chitrankagnihotri.com'].includes(
+            new URL(url).hostname,
+          ),
+      ),
       'Person sameAs should identify the maintainer rather than software products',
     );
   }
@@ -407,8 +434,13 @@ async function run() {
     console.log('✓ sitemap.xml validated');
 
     const pages = [];
+    await Promise.all(
+      EXPECTED_PATHS.map(async pathname => {
+        pageHtmlByPath.set(pathname, await fetchText(pathname));
+      }),
+    );
     for (const pathname of EXPECTED_PATHS) {
-      const html = await fetchText(pathname);
+      const html = pageHtmlByPath.get(pathname);
       const expectedSchemaTypes =
         pathname === '/'
           ? ['WebSite', 'SoftwareSourceCode', 'WebPage']

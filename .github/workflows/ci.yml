@@ -125,7 +125,10 @@ jobs:
           pnpm --filter git-hygiene-app test:seo
 
       - name: Test release guards
-        run: node --test scripts/tests/release-artifacts.test.mjs
+        run: node --test scripts/tests/*.test.mjs
+
+      - name: Test live sandbox validation
+        run: pnpm --filter git-hygiene-app test:sandbox
 
       - name: Run Parallel Checks ⚡️
         id: run_checks

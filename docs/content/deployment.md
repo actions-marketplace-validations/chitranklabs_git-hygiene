@@ -14,12 +14,23 @@ Keep the existing Vercel project and `githygiene.chitrankagnihotri.com` domain.
 Use `app` as the root directory and the existing Next.js framework preset.
 
 ```bash
-pnpm --filter git-hygiene-app build
+pnpm exec turbo build --filter=git-hygiene-app
 pnpm --filter git-hygiene-app start
 ```
 
 `app/vercel.json` defines its build and production-only change detection.
 Next.js owns website routes, sitemap, metadata, security headers and revalidation.
+The live sandbox uses the Node.js `POST /api/v1/validate` route and the workspace
+Core package; deploy the website with server support. The Turbo build includes
+the Core dependency before building the website, including on a fresh checkout. Its JSON request accepts
+`commit`, `branch`, `types`, `ignoreBranches`, `maxHeaderLength` and
+`allowEmptyScope` only. Responses use a `status` plus `data` or `error` envelope.
+Validation failures return a successful response with `valid: false`; malformed
+input returns 400, cross-origin requests 403, bodies over 16 KiB 413, unsupported
+content types 415 and unavailable validation 503. Commit messages are limited to
+4,000 characters and branches to 256. Caller-supplied presets, paths and raw rules
+are rejected. Input is sent to the server for validation without persistence.
+Release bump recommendations require Git history and remain a local CLI command.
 
 ## Documentation site
 

@@ -96,6 +96,7 @@ export async function SiteFooter() {
 
 	return (
 		<Footer
+			className="gh-site-footer"
 			brand={
 				<Link href="/" className="font-mono font-bold tracking-tight flex items-center gap-2">
 					<span className="text-text">git-hygiene</span>

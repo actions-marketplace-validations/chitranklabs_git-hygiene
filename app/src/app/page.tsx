@@ -20,7 +20,7 @@ import { createPageMetadata } from '@/src/lib/metadata';
 import { getLatestRelease } from '@/src/lib/releases';
 import { siteUrl } from '@/src/lib/seo';
 
-import pkg from '@/package.json';
+import pkg from '../../../package.json';
 
 const homeTitle = 'git-hygiene - Commits, Branches and PR Title Validation';
 const homeDescription =
@@ -236,7 +236,7 @@ export default async function HomePage() {
           <SectionHead
             eyebrow="Interactive Workbench"
             title="Test your Git metadata rules live in the browser."
-            lede="Evaluate commit messages, branch patterns, and semantic release recommendations in real time with the pure client-side core engine."
+            lede="Validate commit messages and branch names with the same server-side core engine used by the CLI."
             size="sm"
             level={2}
           />
@@ -256,7 +256,12 @@ export default async function HomePage() {
           />
 
           <div className="mt-ml-8 overflow-hidden rounded-2xl border border-border bg-surface shadow-xs backdrop-blur-xl">
-            <div className="overflow-x-auto overscroll-x-contain">
+            <div
+              role="region"
+              aria-label="Workflow integration comparison"
+              tabIndex={0}
+              className="overflow-x-auto overscroll-x-contain focus-visible:outline-2 focus-visible:outline-accent"
+            >
               <table className="w-full min-w-[620px] text-left font-mono text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-border bg-surface-2/60 text-text-muted text-3xs uppercase tracking-[0.08em]">
@@ -391,7 +396,7 @@ export default async function HomePage() {
             </div>
 
             {/* Programmatic Engine Station */}
-            <div className="space-y-ml-4">
+            <div id="core-api" className="space-y-ml-4 scroll-mt-24">
               <div className="flex items-center justify-between pb-ml-2 border-b border-border">
                 <span className="font-mono text-xs font-bold text-text">
                   Programmatic Core Engine
