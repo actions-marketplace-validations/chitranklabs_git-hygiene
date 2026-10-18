@@ -91,4 +91,7 @@ console.log(recommendation.releaseType, recommendation.reason);
 
 This reads the Git repository at the working directory. It does not accept an
 array of messages, update package manifests or publish. Provide repository history
-and tags when embedding it in CI.
+and tags when embedding it in CI. A history without qualifying changes may
+produce no `releaseType`; check for that before using the result to prepare a
+release. Custom conventional-changelog presets used for bump analysis must
+supply a `whatBump` function.

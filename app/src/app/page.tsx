@@ -109,7 +109,7 @@ const keyPillars = [
     number: '04',
     title: 'Commitlint Compatibility',
     description:
-      'Seamlessly extends @commitlint/config-conventional. Reuse your existing team conventions with zero migration friction.',
+      'Imports selected conventional-preset settings. Configure additional commitlint rules explicitly and verify your policy before changing hooks.',
   },
 ];
 
@@ -390,8 +390,8 @@ export default async function HomePage() {
                 />
               </div>
               <p className="text-xs text-text-muted font-sans leading-relaxed">
-                Seamlessly extends <code>@commitlint/config-conventional</code> with zero extra
-                configuration. Custom types, branch filters, and scope rules merge automatically.
+                The conventional preset contributes selected settings, not every commitlint rule.
+                Configure additional commit rules explicitly.
               </p>
             </div>
 

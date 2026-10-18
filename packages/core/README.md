@@ -5,7 +5,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/@chitrank2050/git-hygiene-core?color=blue&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene-core)
 [![JSR Version](https://jsr.io/badges/@chitrank2050/git-hygiene-core)](https://jsr.io/@chitrank2050/git-hygiene-core)
-[![License](https://img.shields.io/github/license/chitranklabs/git-hygiene)](./LICENSE)
+[![License](https://img.shields.io/github/license/chitranklabs/git-hygiene)](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE)
 
   <a href="https://ko-fi.com/D1D71U581P" target="_blank">
       <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Buy me a coffee at ko-fi.com">
@@ -14,126 +14,78 @@
 
 <br />
 
-`@chitrank2050/git-hygiene-core` is the published programmatic engine used by the CLI. Use it to integrate validation into Node.js tools without invoking a CLI process.
+`@chitrank2050/git-hygiene-core` is the asynchronous Node.js validation engine
+used by the CLI and bundled Action. Use it to embed validation in your own tooling
+without invoking a CLI process. For hooks and terminal use, install
+[the CLI](https://www.npmjs.com/package/@chitrank2050/git-hygiene).
 
-## Documentation
+## Installation
 
-Read the [handbook](../../docs/content/index.md) or the [published documentation](https://githygiene.chitrankagnihotri.com/docs/) for setup, integration guides and reference.
+<a id="-installation"></a>
 
-## Technical Specification
-
-- Requires Node.js 24+; npm exports ESM JavaScript and TypeScript declarations.
-- Uses commitlint and conventional-changelog dependencies; it is not dependency-free or a browser library.
-- Reads and caches configuration from the current working directory's `package.json`. Use `resolveConfig` and an explicit override for independent configurations.
-- `getRecommendedBump` reads the current Git repository and needs its relevant history/tags. No qualifying commits may produce no `releaseType`; handle that before automating releases.
-- Ignored branches are exact names, not globs. Custom bump presets must supply a `whatBump` function.
-
-See the [contribution guide](https://github.com/chitranklabs/git-hygiene/blob/main/CONTRIBUTING.md) for workspace builds, tests, and Changesets.
-
----
-
-### 🧩 Ecosystem
-
-| Package                            | Role              | Status                                                                                                                                                                                                                                                                   |
-| :--------------------------------- | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **@chitrank2050/git-hygiene**      | CLI & Action      | [![npm](https://img.shields.io/npm/v/@chitrank2050/git-hygiene?color=blue&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene) [![jsr](https://jsr.io/badges/@chitrank2050/git-hygiene)](https://jsr.io/@chitrank2050/git-hygiene)                       |
-| **@chitrank2050/git-hygiene-core** | Standalone Engine | [![npm](https://img.shields.io/npm/v/@chitrank2050/git-hygiene-core?color=orange&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene-core) [![jsr](https://jsr.io/badges/@chitrank2050/git-hygiene-core)](https://jsr.io/@chitrank2050/git-hygiene-core) |
-
----
-
-## Features ✨
-
-- **Conventional Commits**: Full support for standard conventional commit validation.
-- **Branch Names**: Powerful regex-based branch name enforcement.
-- **PR Titles**: Validates pull request metadata for clean repository history.
-- **Context Aware**: Automatically detects rules from your `package.json`.
-
-## 📦 Installation
+Use Node.js 24 or newer:
 
 ```bash
-# Using pnpm
-pnpm add @chitrank2050/git-hygiene-core
-
-# Using JSR
-npx jsr add @chitrank2050/git-hygiene-core
-
-# Using npm
 npm install @chitrank2050/git-hygiene-core
 ```
 
-## 🛠️ Usage
+For pnpm, use `pnpm add @chitrank2050/git-hygiene-core`.
+The package is also [published on JSR](https://jsr.io/@chitrank2050/git-hygiene-core).
+
+## Usage
+
+<a id="️-usage"></a>
 
 ```typescript
-import {
-  validateBranch,
-  validateTitle,
-  validateCommit,
-  resolveConfig,
-  getRecommendedBump,
-} from '@chitrank2050/git-hygiene-core';
+import { resolveConfig, validateCommit } from '@chitrank2050/git-hygiene-core';
 
-// 1. Validate a branch name
-const branchResult = await validateBranch('feat/add-login');
-if (!branchResult.valid) {
-  console.error(`Invalid branch: ${branchResult.message}`);
-}
+const config = await resolveConfig({ types: ['feat', 'fix'] });
+const result = await validateCommit('feat: add search', config);
 
-// 2. Validate a PR title
-const titleResult = await validateTitle('feat: implement oauth2');
-console.log(`Title valid: ${titleResult.valid}`);
-
-// 3. Validate a commit message (Async)
-// Returns a detailed report including commitlint warnings/errors
-const commitResult = await validateCommit('fix: resolve memory leak');
-if (commitResult.valid) {
-  console.log('✅ Commit follows standards');
-} else {
-  console.log('❌ Commit validation failed:');
-  commitResult.errors?.forEach(err => console.log(`- ${err.message}`));
-}
-
-// 4. Suggest a semantic version bump
-const bump = await getRecommendedBump();
-console.log(`Recommended bump: ${bump.releaseType} (Reason: ${bump.reason})`);
-
-// 5. Programmatic usage with config override
-const customConfig = await resolveConfig({ types: ['feat', 'fix'], allowEmptyScope: false });
-const result = await validateCommit('feat(core): manual override', customConfig);
-```
-
-## ⚙️ Configuration
-
-`git-hygiene` is designed to be zero-config, but you can easily customize the engine by adding a `git-hygiene` block to your root `package.json`.
-
-| Property          | Description                            | Default                                     | Possible Values                  |
-| ----------------- | -------------------------------------- | ------------------------------------------- | -------------------------------- |
-| `types`           | Allowed commit types                   | `feat`, `fix`, `chore`, etc.                | `string[]`                       |
-| `ignoreBranches`  | Branches to skip validation            | `main`, `master`, `development`, `gh-pages` | `string[]`                       |
-| `maxHeaderLength` | Max length of the commit header        | `100`                                       | `number`                         |
-| `maxBodyLength`   | Max length of a single body line       | `1000`                                      | `number`                         |
-| `minBodyLength`   | Min length of the commit body          | `0`                                         | `number`                         |
-| `typeCase`        | Case requirement for types             | `lower-case`                                | `lower-case`, `upper-case`, etc. |
-| `scopeCase`       | Case requirement for scopes            | `lower-case`                                | `lower-case`, `upper-case`, etc. |
-| `allowEmptyScope` | Whether scope is optional              | `true`                                      | `boolean`                        |
-| `subjectFullStop` | Whether subject can end with a period  | `never`                                     | `always`, `never`                |
-| `extends`         | Standard configs to extend from        | `[]`                                        | `string[]`                       |
-| `rules`           | Raw commitlint rules to merge/override | `{}`                                        | `Record<string, unknown>`        |
-
-```json
-{
-  "git-hygiene": {
-    "extends": ["@commitlint/config-conventional"],
-    "types": ["feat", "fix", "chore", "docs", "refactor", "test", "renovate"],
-    "ignoreBranches": ["main", "develop"],
-    "maxHeaderLength": 100,
-    "allowEmptyScope": false,
-    "rules": {
-      "subject-case": [2, "always", "sentence-case"]
-    }
-  }
+if (!result.valid) {
+  console.error(result.message);
+  process.exitCode = 1;
 }
 ```
 
-## 📜 License
+With this configuration, the example returns `valid: true`. Validation reports
+invalid metadata through `valid: false`; configuration or I/O failures can throw.
+Handle rejected promises at your application boundary.
 
-MIT - see [LICENSE](./LICENSE) for details.
+## Configuration
+
+<a id="️-configuration"></a>
+
+Without an explicit resolved configuration, validation loads and caches the
+`git-hygiene` object from the current directory's `package.json`. Resolve once and
+reuse the resulting config for independent policies. See
+[configuration](https://docs.githygiene.chitrankagnihotri.com/reference/configuration/)
+for defaults, preset inheritance and commitlint overrides.
+
+## Technical Specification
+
+- npm exports ESM JavaScript and TypeScript declarations.
+- Uses commitlint and conventional-changelog dependencies; it is not a browser library.
+- `validateBranch`, `validateTitle` and `validateCommit` return promises with a
+  `valid` result. Title checks do not run every commitlint rule.
+- `getRecommendedBump` reads Git history and tags at the working directory. No
+  qualifying history may yield no `releaseType`; handle that before automating releases.
+- Ignored branches are exact names, not globs. Custom bump presets must supply a
+  `whatBump` function.
+
+## Documentation
+
+<a id="-license"></a>
+
+<a id="features-"></a>
+
+<a id="-ecosystem"></a>
+
+[Core API and result types](https://docs.githygiene.chitrankagnihotri.com/reference/core-api/) ·
+[Configuration](https://docs.githygiene.chitrankagnihotri.com/reference/configuration/) ·
+[Troubleshooting](https://docs.githygiene.chitrankagnihotri.com/troubleshooting/) ·
+[Contributor guide](https://github.com/chitranklabs/git-hygiene/blob/main/CONTRIBUTING.md)
+
+Licensed under [MIT](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE).
+
+<p align="center">❤️ Developed by <a href="https://chitrankagnihotri.com">Chitrank Agnihotri</a></p>

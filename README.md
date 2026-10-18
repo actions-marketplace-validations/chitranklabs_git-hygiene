@@ -8,9 +8,6 @@
   <a href="https://github.com/chitranklabs/git-hygiene/actions/workflows/ci.yml">
     <img src="https://github.com/chitranklabs/git-hygiene/actions/workflows/ci.yml/badge.svg" alt="CI Status" />
   </a>
-  <a href="https://bestpractices.coreinfrastructure.org/projects/1">
-    <img src="https://bestpractices.coreinfrastructure.org/projects/1/badge" alt="Best Practices" />
-  </a>
   <a href="https://github.com/chitranklabs/git-hygiene/actions/workflows/scorecard.yml">
     <img src="https://github.com/chitranklabs/git-hygiene/actions/workflows/scorecard.yml/badge.svg" alt="Scorecard Status" />
   </a>
@@ -27,7 +24,7 @@
     <img src="https://codecov.io/gh/chitranklabs/git-hygiene/branch/main/graph/badge.svg" alt="Code Coverage" />
   </a>
   <a href="https://github.com/chitranklabs/git-hygiene/attestations">
-    <img src="https://img.shields.io/badge/SLSA-Level_3-blue?logo=slsa" alt="SLSA Level 3" />
+    <img src="https://img.shields.io/badge/Build-Provenance-blue?logo=slsa" alt="Build provenance" />
   </a>
   <a href="./LICENSE">
     <img src="https://img.shields.io/github/license/chitranklabs/git-hygiene" alt="License" />
@@ -44,333 +41,209 @@
   <br/>
 </div>
 
-`git-hygiene` validates Git metadata and recommends semantic version bumps. This pnpm/Turborepo monorepo contains two published packages, a private website, and a GitHub Action.
+`git-hygiene` checks Git metadata and recommends semantic version changes. Use the
+CLI in hooks, the bundled GitHub Action in CI, or the Core API inside your own
+Node.js tooling. They share the same configuration format.
+
+## Why git-hygiene
+
+Keep commit, branch and PR title conventions in one `package.json` configuration.
+Local hooks give fast feedback; CI provides checks that do not depend on each
+contributor installing those hooks. Validation and release recommendations remain
+separate from publishing.
 
 ## Workspace guide
 
-| Location                       | Purpose                                       | Documentation                          |
-| ------------------------------ | --------------------------------------------- | -------------------------------------- |
-| `packages/cli`                 | Published command-line tool                   | [CLI README](packages/cli/README.md)   |
-| `packages/core`                | Published programmatic engine                 | [Core README](packages/core/README.md) |
-| `app`                          | Private Next.js website                       | [App README](app/README.md)            |
-| `action.yml`, `dist/action.js` | Composite action and committed runtime bundle | [Action definition](action.yml)        |
+| Location                       | Purpose                                       | Start here                                                                           |
+| ------------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `packages/cli`                 | Published command-line tool                   | [CLI package](packages/cli/README.md)                                                |
+| `packages/core`                | Published Node.js validation engine           | [Core package](packages/core/README.md)                                              |
+| `action.yml`, `dist/action.js` | Composite action and committed runtime bundle | [Action guide](https://docs.githygiene.chitrankagnihotri.com/guides/github-actions/) |
+| `app`                          | Private Next.js website and sandbox           | [Website development](app/README.md)                                                 |
+| `docs`                         | Independent Monoline Docs handbook            | [Documentation](https://docs.githygiene.chitrankagnihotri.com/)                      |
 
-## Documentation
+## Features <a id="features"></a>
 
-Read the [handbook](docs/content/index.md) or the [documentation](https://docs.githygiene.chitrankagnihotri.com/) for setup, integration guides and reference.
+<a id="features--"></a>
 
-## Technical Specification
+- Validate commits with commitlint rules derived from your configuration.
+- Check branch names and PR title format; title checks do not run every commit rule.
+- Read JSON output for automation or embed the asynchronous Core API.
+- Recommend a semantic release type from Git history without publishing anything.
 
-- Runtime: Node.js 24+; Git for history-based commands.
-- Workspace: use the exact pnpm version in `package.json#packageManager`; Turbo coordinates package tasks.
-- Dependencies: the CLI uses core and picocolors; core uses commitlint and conventional-changelog tooling. These packages are not dependency-free.
-- The current action source runs a committed JavaScript bundle without an npm install. Older action revisions may still download the CLI; verify the revision you pin.
+## Installation <a id="installation"></a>
 
----
+<a id="installation--"></a>
 
-## 📦 Registries & Links
-
-| Registry        | Package                          | URL                                                                                                                  |
-| :-------------- | :------------------------------- | :------------------------------------------------------------------------------------------------------------------- |
-| **NPM**         | `@chitrank2050/git-hygiene`      | [npmjs.com/package/@chitrank2050/git-hygiene](https://www.npmjs.com/package/@chitrank2050/git-hygiene)               |
-| **JSR**         | `@chitrank2050/git-hygiene`      | [jsr.io/@chitrank2050/git-hygiene](https://jsr.io/@chitrank2050/git-hygiene)                                         |
-| **Marketplace** | `git-hygiene-validator`          | [github.com/marketplace/actions/git-hygiene-validator](https://github.com/marketplace/actions/git-hygiene-validator) |
-| **Core (NPM)**  | `@chitrank2050/git-hygiene-core` | [npmjs.com/package/@chitrank2050/git-hygiene-core](https://www.npmjs.com/package/@chitrank2050/git-hygiene-core)     |
-| **Core (JSR)**  | `@chitrank2050/git-hygiene-core` | [jsr.io/@chitrank2050/git-hygiene-core](https://jsr.io/@chitrank2050/git-hygiene-core)                               |
-
----
-
-## Features <a id="features"></a> ✨
-
-| Feature                       | Description                                                             |
-| ----------------------------- | ----------------------------------------------------------------------- |
-| 🧼 **Unified Engine**         | Define your standards once. Enforce them in commits, branches, and PRs. |
-| ⚡ **Bundled Action**         | The current action includes its runtime dependencies.                   |
-| 🛡️ **Hardened Security**      | 100% SHA-pinned workflows & OpenSSF Scorecard verified.                 |
-| 📦 **Universal Distribution** | Native support for **NPM**, **JSR**, and **GitHub Actions**.            |
-| 🧠 **Context Aware**          | Automatically detects `.git` environment and CI context.                |
-
----
-
-## Installation <a id="installation"></a> 📦
+Use Node.js 24 or newer. Install the CLI in the repository you want to check:
 
 ```bash
-# Using pnpm (Recommended)
-pnpm add -D @chitrank2050/git-hygiene
-
-# Using JSR (For Deno / Modern Node)
-npx jsr add @chitrank2050/git-hygiene
-
-# Using npm
 npm install --save-dev @chitrank2050/git-hygiene
 ```
 
----
+For pnpm, use `pnpm add -D @chitrank2050/git-hygiene`. Keep the dependency in your
+lockfile so contributors and CI use the same version.
 
-## Usage <a id="usage"></a> 🛠️
+## Usage <a id="usage"></a>
 
-### 1. Local Hooks (Lefthook)
+<a id="5-programmatic-usage-library"></a>
 
-The recommended way to use `git-hygiene` locally.
+<a id="4-manual--script-usage"></a>
 
-```yaml
-# lefthook.yml
-commit-msg:
-  commands:
-    hygiene:
-      run: npx @chitrank2050/git-hygiene commit {1}
+<a id="2-local-hooks-husky"></a>
 
-pre-push:
-  commands:
-    hygiene:
-      run: npx @chitrank2050/git-hygiene branch
-```
+<a id="1-local-hooks-lefthook"></a>
 
-### 2. Local Hooks (Husky)
+<a id="documentation"></a>
 
-For projects using Husky 9+.
+<a id="usage--️"></a>
+
+Run from the directory containing the intended `package.json`:
 
 ```bash
-# .husky/commit-msg
-npx @chitrank2050/git-hygiene commit "$1"
-
-# .husky/pre-push
-npx @chitrank2050/git-hygiene branch
+npx --no-install git-hygiene commit "feat: add search"
+npx --no-install git-hygiene branch "feat/add-search"
+npx --no-install git-hygiene title "feat(search): add filters"
 ```
 
-### 3. GitHub Actions (CI) 🤖
+Valid input exits with status `0`; invalid input or an error exits with status `1`.
+With default settings, `commit "added search"` fails and reports the violated rules.
+See the [Quickstart](https://docs.githygiene.chitrankagnihotri.com/getting-started/)
+for configuration and the first failure check.
 
-Validate metadata in CI. Pin a reviewed action revision. The examples below retain an older revision and do not demonstrate the new bundled runtime; update the pin after the bundle changes are merged and verified.
+| Goal                                                        | Guide                                                                                  |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Check messages before committing or branches before pushing | [Lefthook and Husky](https://docs.githygiene.chitrankagnihotri.com/guides/git-hooks/)  |
+| Validate metadata in CI                                     | [GitHub Actions](https://docs.githygiene.chitrankagnihotri.com/guides/github-actions/) |
+| Run individual commands, use JSON or inspect exit status    | [Commands](https://docs.githygiene.chitrankagnihotri.com/reference/cli/)               |
+| Embed validation in a Node.js tool                          | [Core API](https://docs.githygiene.chitrankagnihotri.com/reference/core-api/)          |
 
-Provide Node.js 24+, Bash, and jq for the composite action. Check out the consumer repository to load its configuration. For `bump` or Omni-mode, fetch history and tags (`fetch-depth: 0` on checkout); explicit title/branch validation does not need full history.
+## GitHub Action
 
-#### **Smart Zero-Config Mode (Recommended)**
+<a id="action-outputs-"></a>
 
-Just drop the action into your PR workflow. It will automatically detect the context, validate your PR title and branch name, and suggest a version bump.
+<a id="usage-example"></a>
 
-```yaml
-- name: Git Hygiene 🌊
-  uses: chitranklabs/git-hygiene@8abac926a6afcde68889b34f9ec3d1acefd69538
-```
+<a id="manual-mode"></a>
 
-#### **Manual Mode**
+<a id="smart-zero-config-mode-recommended"></a>
 
-For granular control over specific commands.
+<a id="3-github-actions-ci-"></a>
 
-```yaml
-# Validate PR Title explicitly
-- name: Validate PR Title 🏷️
-  uses: chitranklabs/git-hygiene@8abac926a6afcde68889b34f9ec3d1acefd69538
-  with:
-    command: 'title'
-    value: '${{ github.event.pull_request.title }}'
+<a id="-github-action"></a>
 
-# Validate Branch Name
-- name: Validate Branch Name 🌿
-  uses: chitranklabs/git-hygiene@8abac926a6afcde68889b34f9ec3d1acefd69538
-  with:
-    command: 'branch'
-    value: '${{ github.head_ref }}'
-```
+The action runs a committed JavaScript bundle. It does not install the CLI from
+npm during a run. Use the complete [workflow example and input/output reference](https://docs.githygiene.chitrankagnihotri.com/guides/github-actions/)
+for checkout, Node setup, immutable action pins and permissions.
 
-### 4. Manual / Script Usage
+Explicit `title` mode checks the supplied title only. Default `omni` mode checks
+available PR metadata and recommends a bump from Git history. Neither mode creates
+a release. Review the revision you pin; older action revisions used a different
+installation path.
 
-Run any check manually from the terminal.
+## Configuration <a id="configuration"></a>
 
-```bash
-# Check a specific commit message
-npx @chitrank2050/git-hygiene commit "feat: my awesome commit"
+<a id="raw-commitlint-rules-️"></a>
 
-# Check a branch name string
-npx @chitrank2050/git-hygiene branch "feat/cool-stuff"
+<a id="extending-configurations-"></a>
 
-# Check a PR title
-npx @chitrank2050/git-hygiene title "fix(core): resolve memory leak"
+<a id="example-packagejson"></a>
 
-# Suggest the next semantic version bump
-npx @chitrank2050/git-hygiene bump
+<a id="reference-table"></a>
 
-# Output result as JSON (useful for automation)
-npx @chitrank2050/git-hygiene bump --json
-```
+<a id="configuration--️"></a>
 
----
-
-## 🐙 GitHub Action
-
-You can easily integrate `git-hygiene` into your CI/CD pipeline using the official GitHub Action. This allows you to validate PR titles, branch names, and commit messages automatically.
-
-### Usage Example
-
-```yaml
-jobs:
-  hygiene:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate PR Title 🌊
-        id: hygiene
-        uses: chitranklabs/git-hygiene@8abac926a6afcde68889b34f9ec3d1acefd69538
-        with:
-          command: 'title'
-          value: ${{ github.event.pull_request.title }}
-```
-
-### Action Outputs 📤
-
-When using the `bump` command, the action provides the following outputs:
-
-| Output        | Description                                     |
-| ------------- | ----------------------------------------------- |
-| `releaseType` | Recommended bump (`patch`, `minor`, or `major`) |
-| `reason`      | Explanation for the recommendation              |
-
-```yaml
-- name: Get Bump 🚀
-  id: bump
-  uses: chitranklabs/git-hygiene@8abac926a6afcde68889b34f9ec3d1acefd69538
-  with:
-    command: 'bump'
-
-- name: Tag Release 🏷️
-  run: echo "Next version is ${{ steps.bump.outputs.releaseType }}"
-```
-
-> **Note on Pinning to a SHA:** For maximum security and stability, we highly recommend pinning the `uses` directive to a specific commit SHA instead of a branch like `@main`. You can get the commit SHA by navigating to the [Commits page](https://github.com/chitranklabs/git-hygiene/commits/main) of this repository and copying the 40-character hash (e.g. `uses: chitranklabs/git-hygiene@8f3d...`).
-
----
-
-### 5. Programmatic Usage (Library)
-
-Import the engine directly into your TypeScript project.
-
-```typescript
-import { validateBranch, resolveConfig } from '@chitrank2050/git-hygiene-core';
-
-// Standard usage (auto-loads package.json)
-const { valid } = await validateBranch('feat/new-ui');
-
-// Programmatic usage with config override
-const customConfig = await resolveConfig({ types: ['feat', 'fix'] });
-const result = await validateBranch('feat/new-ui', customConfig);
-```
-
----
-
-## 🚀 Automated Releases
-
-The CLI's `bump` command recommends a release type from Git history; it does not publish or change package versions. A history with no qualifying changes may have no `releaseType`.
-
-This repository uses Changesets for package versioning. CLI and core are a fixed version group; the private app is ignored. See [Contributing](CONTRIBUTING.md#release-process-🚀) for preparation and publication. git-cliff supplies the repository and website history, separate from package Changesets.
-
----
-
-## Configuration <a id="configuration"></a> ⚙️
-
-`git-hygiene` is designed to be zero-config, but you can easily customize the engine by adding a `git-hygiene` block to your root `package.json`.
-
-### Reference Table
-
-| Property          | Description                               | Default                                     | Possible Values                                |
-| ----------------- | ----------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
-| `types`           | Allowed commit types                      | `feat`, `fix`, `chore`, etc.                | `string[]`                                     |
-| `ignoreBranches`  | Branches to skip validation (e.g. `main`) | `main`, `master`, `development`, `gh-pages` | `string[]`                                     |
-| `maxHeaderLength` | Max length of the commit header           | `100`                                       | `number`                                       |
-| `maxBodyLength`   | Max length of a single body line          | `1000`                                      | `number`                                       |
-| `minBodyLength`   | Min length of the commit body             | `0`                                         | `number`                                       |
-| `typeCase`        | Case requirement for types                | `lower-case`                                | `lower-case`, `upper-case`, `camel-case`, etc. |
-| `scopeCase`       | Case requirement for scopes               | `lower-case`                                | `lower-case`, `upper-case`, `camel-case`, etc. |
-| `allowEmptyScope` | Whether scope is optional                 | `true`                                      | `boolean`                                      |
-| `subjectFullStop` | Whether subject can end with a period     | `never`                                     | `always`, `never`                              |
-| `extends`         | Standard configs to extend from           | `[]`                                        | `['@commitlint/config-conventional']`          |
-| `rules`           | Raw commitlint rules to merge/override    | `{}`                                        | `Record<string, unknown>`                      |
-
-### Example `package.json`
+Add a `git-hygiene` property to your existing `package.json`, retaining its other fields:
 
 ```json
 {
   "git-hygiene": {
-    "extends": ["@commitlint/config-conventional"],
-    "types": ["feat", "fix", "chore", "docs", "refactor", "test", "renovate"],
+    "types": ["feat", "fix", "docs", "chore"],
     "ignoreBranches": ["main", "develop"],
-    "maxHeaderLength": 100,
-    "allowEmptyScope": false,
-    "rules": {
-      "subject-case": [2, "always", "sentence-case"],
-      "header-max-length": [2, "always", 72]
-    }
+    "maxHeaderLength": 100
   }
 }
 ```
 
-### Extending Configurations 🔌
+The loader reads the current directory, not parent directories. Ignored branches
+are exact names, not globs. A conventional preset imports selected settings;
+it does not merge every commitlint rule. See [configuration defaults and overrides](https://docs.githygiene.chitrankagnihotri.com/reference/configuration/)
+before adapting an existing policy.
 
-`git-hygiene` now supports extending standard configurations. The most common use case is extending `@commitlint/config-conventional` to inherit the industry-standard types and rules.
+## Technical Specification
 
-When you extend a configuration:
+- CLI/Core require Node.js 24+; history-based operations also require Git and tags.
+- npm packages expose ESM JavaScript; Core includes TypeScript declarations.
+- CLI and Core have runtime dependencies. The bundled Action avoids an install
+  step; that does not make the packages dependency-free.
+- npm and JSR publish CLI/Core distributions. See each package README for its
+  entry point; the Action is distributed from the repository separately.
 
-- **Types are merged**: Your local types are combined with the types from the extended config.
-- **Selected defaults are inherited**: The conventional config supplies types, the default header length, and parser preset; it does not import every commitlint rule. Set additional rules explicitly.
-- **Parser Presets**: Advanced syntax (like the `!` breaking change indicator) is automatically supported.
+## Registries & Links
 
-### Raw Commitlint Rules 🛠️
+<a id="-registries--links"></a>
 
-For power users, the `rules` property allows you to pass any raw `commitlint` rule directly to the underlying engine. This gives you full control over every aspect of your commit validation.
+| Distribution | npm                                                                              | JSR                                                               |
+| ------------ | -------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| CLI          | [git-hygiene](https://www.npmjs.com/package/@chitrank2050/git-hygiene)           | [git-hygiene](https://jsr.io/@chitrank2050/git-hygiene)           |
+| Core         | [git-hygiene-core](https://www.npmjs.com/package/@chitrank2050/git-hygiene-core) | [git-hygiene-core](https://jsr.io/@chitrank2050/git-hygiene-core) |
 
-```json
-"rules": {
-  "body-leading-blank": [2, "always"],
-  "footer-leading-blank": [1, "always"]
-}
-```
+[GitHub Marketplace](https://github.com/marketplace/actions/git-hygiene-validator) ·
+[Website](https://githygiene.chitrankagnihotri.com/) ·
+[Documentation](https://docs.githygiene.chitrankagnihotri.com/) ·
+[Release history](https://github.com/chitranklabs/git-hygiene/releases)
 
----
+## Architecture <a id="architecture"></a>
 
-## Architecture <a id="architecture"></a> 🏛️
-
-Configuration is read from `package.json` in the current working directory, not automatically discovered at the workspace root. `ignoreBranches` contains exact names, not glob patterns.
+<a id="architecture--️"></a>
 
 ```mermaid
 graph TD
-    A[Consumer Project] -->|CLI| B["@chitrank2050/git-hygiene"]
-    A -->|Action| C["GitHub Action (Root)"]
-    B --> D["@chitrank2050/git-hygiene-core"]
-    C --> D
-    D -->|Engine| E["Conventional Commits & Regex"]
+    A[Consumer repository] -->|CLI| B[git-hygiene]
+    A -->|GitHub Action| C[Committed runtime bundle]
+    A -->|Node.js API| D[git-hygiene-core]
+    B --> D
+    C --> E[Bundled CLI and Core]
 ```
 
----
+See [development](https://docs.githygiene.chitrankagnihotri.com/development/)
+for workspace ownership, verification and action bundle maintenance.
 
-## 🙏 Credits
+## Automated Releases
 
-`git-hygiene` stands on the shoulders of giants. Special thanks to:
+<a id="-automated-releases"></a>
 
-- **[commitlint](https://commitlint.js.org/)**: For the industry-standard commit validation logic we use under the hood.
+`bump` recommends `patch`, `minor` or `major`, not a complete version number. No
+qualifying history may produce no `releaseType`. It does not edit package versions,
+tag Git history or publish packages.
 
----
+This repository versions CLI and Core together with Changesets; the private app
+is excluded. git-cliff supplies repository/website history separately. Follow
+[CONTRIBUTING.md](https://github.com/chitranklabs/git-hygiene/blob/main/CONTRIBUTING.md)
+for release preparation and publication.
 
-## Contributing <a id="contributing"></a> 🤝
+## Contributing <a id="contributing"></a>
 
-We ❤️ contributions! Whether you're fixing a bug, adding a feature, or improving documentation, please see our [Contributing Guide](./CONTRIBUTING.md) to get started.
+<a id="️-security--quality"></a>
 
----
+<a id="contributing--"></a>
 
-## Community & Support 🌏
+Start with the [contributor guide](https://github.com/chitranklabs/git-hygiene/blob/main/CONTRIBUTING.md).
+Repository checks include tests, Gitleaks and Zizmor; attestations are linked above.
+These checks do not guarantee vulnerability-free software.
 
-- **Security**: Please see our [Security Policy](./SECURITY.md) for reporting vulnerabilities.
-- **Conduct**: We follow the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md).
-- **Support**: If you use `git-hygiene` in your project, a star or credit is appreciated. ✨
+<a id="community--support-"></a>
+<a id="-security--quality"></a>
 
----
+Use [issues](https://github.com/chitranklabs/git-hygiene/issues) for reproducible
+bugs, follow the [Code of Conduct](https://github.com/chitranklabs/git-hygiene/blob/main/CODE_OF_CONDUCT.md),
+and report vulnerabilities through [SECURITY.md](https://github.com/chitranklabs/git-hygiene/blob/main/SECURITY.md).
 
-## 🛡️ Security & Quality
+## Credits
 
-- **Secret Scanning**: Gitleaks prevents credential leaks in every commit.
-- **Workflow Auditing**: Zizmor ensures GitHub Actions follow security best practices.
-- **Supply Chain**: All GitHub Actions are pinned to secure commit SHAs.
-- **Provenace**: Automated build attestations for every release.
+<a id="-credits"></a>
 
----
+Commit validation uses [commitlint](https://commitlint.js.org/).
+Licensed under [MIT](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE).
 
-Developed with ❤️ by [Chitrank Agnihotri](https://www.chitrankagnihotri.com)
-
-_If you use this in your project, a credit or star is appreciated._ ✨
+<p align="center">❤️ Developed by <a href="https://chitrankagnihotri.com">Chitrank Agnihotri</a></p>

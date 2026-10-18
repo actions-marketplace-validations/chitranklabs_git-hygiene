@@ -89,9 +89,11 @@ npm install --save-dev @commitlint/config-conventional
 }
 ```
 
-The current conventional-config integration imports selected values, including
-allowed types, header length and parser preset. It is not a complete merge of every
-rule from that package; configure additional rules explicitly with `rules`.
+The current conventional-config integration unions its allowed types into your
+configured list, and imports header length and parser preset when not explicitly
+configured. It is not a complete merge of every rule from that package; configure
+additional rules explicitly with `rules`. Omit this extension when a strict,
+smaller type list is required.
 Other named extensions are handled through the conventional-changelog preset
 loader. Missing extensions can warn and fall back rather than fail the check.
 

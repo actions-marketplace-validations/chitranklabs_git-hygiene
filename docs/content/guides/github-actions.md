@@ -9,6 +9,10 @@ The repository includes a composite action that runs its committed JavaScript
 bundle. It does not install the CLI from npm during a workflow run. Choose an
 explicit command for a focused check, or use its default `omni` mode.
 
+The composite action needs Node.js 24 or newer, Bash and `jq` on the runner.
+The Ubuntu example below supplies Node through setup-node; Bash and `jq` are
+available on that runner. Provision all three when using a self-hosted runner.
+
 ## Check pull request metadata
 
 ```yaml
@@ -21,21 +25,26 @@ permissions:
 jobs:
   metadata:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: '24'
-      - uses: chitranklabs/git-hygiene@main
+      - uses: chitranklabs/git-hygiene@dc37236d02c55f7cf29bfed8050b7a9801db9063
 ```
 
-This readable example uses refs. Before adopting it in a protected repository,
-pin every action to a reviewed commit SHA. Select the git-hygiene revision from
-[its releases](https://github.com/chitranklabs/git-hygiene/releases), rather than
-following `main` indefinitely. The example is not a claim that `@v1` exists.
+The examples pin a reviewed revision containing the committed action bundle.
+Review and update these SHAs when adopting a newer revision; they do not assume
+a `v1` tag. The checkout and Node setup pins match this repository's CI.
 
 The `edited` event matters: changing only a PR title should rerun title validation.
 Full Git history and tags are needed for meaningful version-bump recommendations.
@@ -55,7 +64,7 @@ workflow should validate a particular value instead of relying on event detectio
 
 ```yaml
 - name: Validate title
-  uses: chitranklabs/git-hygiene@main
+  uses: chitranklabs/git-hygiene@dc37236d02c55f7cf29bfed8050b7a9801db9063
   with:
     command: title
     value: ${{ github.event.pull_request.title }}
@@ -80,6 +89,12 @@ shell commands.
 Give the step an `id` to consume its outputs using
 `${{ steps.your_step_id.outputs.releaseType }}`. A recommendation does not publish
 or tag a release. Keep release decisions in your own workflow.
+
+A title check validates format, not the complete policy for a future squash
+commit. If that final message must satisfy commitlint rules, validate it with
+`command: commit` as a separate check too. `bump` and `omni` require usable history
+and tags; handle repositories without a qualifying recommendation explicitly
+in your release process rather than assuming a version change always exists.
 
 ## Configuration and failures
 
