@@ -330,11 +330,14 @@ jobs:
           node scripts/release-artifacts.mjs verify-jsr
 
       - name: Generate release notes
-        id: notes
-        uses: orhun/git-cliff-action@3d96a18cc4ec17e9dc69ddcc424ccafaf1f78ce2 # v4.9.0
-        with:
-          config: cliff.toml
-          args: --latest --strip all
+        env:
+          RELEASE_TAG: ${{ needs.build.outputs.tag }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
+        run: |
+          set -euo pipefail
+          # Recovery may target a release older than the note generator.
+          git show "$WORKFLOW_SHA:scripts/release-notes.mjs" > "$RUNNER_TEMP/release-notes.mjs"
+          node "$RUNNER_TEMP/release-notes.mjs" "$RELEASE_TAG" "$RUNNER_TEMP/release-notes.md"
 
       - name: Create release token
         id: release_token
@@ -349,7 +352,6 @@ jobs:
           GH_TOKEN: ${{ steps.release_token.outputs.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ needs.build.outputs.tag }}
-          RELEASE_NOTES: ${{ steps.notes.outputs.content }}
           RELEASE_ARTIFACTS: ${{ runner.temp }}/release-artifacts
         run: |
           set -euo pipefail
@@ -369,7 +371,7 @@ jobs:
             done
           else
             gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" \
-              --notes "$RELEASE_NOTES" "$RELEASE_ARTIFACTS"/*
+              --notes-file "$RUNNER_TEMP/release-notes.md" "$RELEASE_ARTIFACTS"/*
           fi
 
   release-summary:

@@ -124,6 +124,22 @@ For local validation, run `node --test scripts/tests/release-artifacts.test.mjs`
 
 Existing JSR versions are accepted only after their published file checksums match the tagged source. Registry lookup failures stop publishing; only a confirmed absent version permits a publish attempt. Preparation runs on main, rejects unconsumed changesets and version downgrades, and rebuilds the committed action bundle after version changes.
 
+GitHub notes use the exact tagged version's committed package changelog sections.
+When older releases have no package summaries, the exact root changelog section is
+used and the fallback is stated. Missing or empty summaries stop creation.
+Installation commands and Node requirements come from the tagged manifests.
+
+To preview notes from the current checkout without publishing:
+
+```sh
+node scripts/release-notes.mjs vX.Y.Z /tmp/git-hygiene-release-notes.md
+```
+
+For an existing release that only needs its description corrected, review that
+file, then run `gh release edit vX.Y.Z --notes-file /tmp/git-hygiene-release-notes.md`.
+This changes no tag, artifact or registry version. Normal recovery verifies existing
+release assets without replacing its description.
+
 JSR provenance is required for normal releases. `disabled-for-recovery` is an explicit manual-only escape hatch for a confirmed upstream provenance outage; it must not be selected to bypass package validation or type checking.
 
 We use an automated monorepo release flow powered by **Changesets** and **git-cliff**:
