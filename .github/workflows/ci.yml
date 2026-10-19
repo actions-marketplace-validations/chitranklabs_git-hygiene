@@ -127,6 +127,10 @@ jobs:
       - name: Test release guards
         run: node --test scripts/tests/*.test.mjs
 
+      - name: Build sandbox dependency for workflow-only checks
+        if: needs.changes.outputs.src != 'true' && needs.changes.outputs.deps != 'true'
+        run: pnpm --filter @chitrank2050/git-hygiene-core build
+
       - name: Test live sandbox validation
         run: pnpm --filter git-hygiene-app test:sandbox
 
