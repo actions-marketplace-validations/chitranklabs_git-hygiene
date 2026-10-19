@@ -32,6 +32,8 @@ are documented in [CONTRIBUTING.md](https://github.com/chitranklabs/git-hygiene/
 | `app`                          | Next.js landing page, sandbox and changelog      |
 | `docs`                         | Monoline Docs handbook sources and navigation    |
 
+The CLI delegates validation to Core. The Action bundles the CLI and its runtime
+dependencies into `dist/action.js`; both paths use the same configuration model.
 The website and handbook are private application output, not files shipped in
 the CLI or Core npm tarballs.
 

@@ -3,16 +3,11 @@
 
 **The standalone validation engine behind `git-hygiene`.**
 
-[![NPM Version](https://img.shields.io/npm/v/@chitrank2050/git-hygiene-core?color=blue&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene-core)
-[![JSR Version](https://jsr.io/badges/@chitrank2050/git-hygiene-core)](https://jsr.io/@chitrank2050/git-hygiene-core)
-[![License](https://img.shields.io/github/license/chitranklabs/git-hygiene)](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE)
+[Website](https://githygiene.chitrankagnihotri.com/) · [Docs](https://docs.githygiene.chitrankagnihotri.com/) · [API](https://docs.githygiene.chitrankagnihotri.com/reference/core-api/) · [npm](https://www.npmjs.com/package/@chitrank2050/git-hygiene-core)
 
-  <a href="https://ko-fi.com/D1D71U581P" target="_blank">
-      <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Buy me a coffee at ko-fi.com">
-    </a>
+[![NPM Version](https://img.shields.io/npm/v/@chitrank2050/git-hygiene-core?color=blue&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene-core) [![JSR Version](https://jsr.io/badges/@chitrank2050/git-hygiene-core)](https://jsr.io/@chitrank2050/git-hygiene-core) [![License](https://img.shields.io/github/license/chitranklabs/git-hygiene)](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE)
+
 </div>
-
-<br />
 
 `@chitrank2050/git-hygiene-core` is the asynchronous Node.js validation engine
 used by the CLI and bundled Action. Use it to embed validation in your own tooling

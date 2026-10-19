@@ -3,16 +3,11 @@
 
 **Validate commits, branches, and pull request titles from the command line.**
 
-[![NPM Version](https://img.shields.io/npm/v/@chitrank2050/git-hygiene?color=blue&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene)
-[![JSR Version](https://jsr.io/badges/@chitrank2050/git-hygiene)](https://jsr.io/@chitrank2050/git-hygiene)
-[![License](https://img.shields.io/github/license/chitranklabs/git-hygiene)](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE)
+[Website](https://githygiene.chitrankagnihotri.com/) · [Docs](https://docs.githygiene.chitrankagnihotri.com/) · [Quickstart](https://docs.githygiene.chitrankagnihotri.com/getting-started/) · [npm](https://www.npmjs.com/package/@chitrank2050/git-hygiene)
 
-  <a href="https://ko-fi.com/D1D71U581P" target="_blank">
-      <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Buy me a coffee at ko-fi.com">
-    </a>
+[![NPM Version](https://img.shields.io/npm/v/@chitrank2050/git-hygiene?color=blue&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene) [![JSR Version](https://jsr.io/badges/@chitrank2050/git-hygiene)](https://jsr.io/@chitrank2050/git-hygiene) [![License](https://img.shields.io/github/license/chitranklabs/git-hygiene)](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE)
+
 </div>
-
-<br />
 
 `@chitrank2050/git-hygiene` is the command-line package. Install it in the
 repository whose commits, branches and PR titles you want to check. For embedding
