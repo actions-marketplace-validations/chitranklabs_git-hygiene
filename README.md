@@ -78,6 +78,12 @@ Release preparation and recovery belong in the contributor guide.
 [Coverage](https://codecov.io/gh/chitranklabs/git-hygiene)
 
 Commit validation uses [commitlint](https://commitlint.js.org/). Licensed under
-[MIT](./LICENSE). [Support the project](https://ko-fi.com/D1D71U581P).
+[MIT](./LICENSE).
+
+## Support
+
+If this project is useful to you, you can support its maintenance on Ko-fi.
+
+[![Support on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D71U581P)
 
 <p align="center">Developed by <a href="https://chitrankagnihotri.com">Chitrank Agnihotri</a></p>

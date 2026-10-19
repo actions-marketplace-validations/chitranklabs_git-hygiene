@@ -105,4 +105,10 @@ to install and verify the hooks. CI checks are still needed when policy must be 
 
 Licensed under [MIT](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE).
 
+## Support
+
+If this project is useful to you, you can support its maintenance on Ko-fi.
+
+[![Support on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D71U581P)
+
 <p align="center">❤️ Developed by <a href="https://chitrankagnihotri.com">Chitrank Agnihotri</a></p>
