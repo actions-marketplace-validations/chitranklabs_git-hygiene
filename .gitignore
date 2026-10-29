@@ -1,9 +1,18 @@
 # Dependencies
 node_modules
 
-# Build
-dist
+# Build & Framework
+packages/*/dist
+dist/*
+!dist/action.js
+release-artifacts/
+*.tgz
+.next
+out
+.vercel
 *.tsbuildinfo
+deno.lock
+next-env.d.ts
 .turbo
 
 # Logs
@@ -34,7 +43,7 @@ pnpm-debug.log*
 Thumbs.db
 
 # Test & CI
-/coverage/
+coverage/
 /.ci-status/
 osv-scanner
 gitleaks
@@ -44,4 +53,6 @@ gitleaks.tar.gz
 .gemini/
 scratch/
 git-cliff/
-coverage
+
+# Independent Monoline Docs output
+docs/dist/

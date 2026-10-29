@@ -11,8 +11,6 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - 'docs/**'
-      - 'assets/**'
       - '*.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/PULL_REQUEST_TEMPLATE.md'
@@ -26,6 +24,8 @@ on:
       - 'lefthook.yml'
   pull_request:
     branches: [main]
+
+permissions: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -50,7 +50,7 @@ jobs:
       workflows: ${{ steps.filter.outputs.workflows }}
     steps:
       - name: Harden Runner 🛡️
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
           egress-policy: audit
 
@@ -66,15 +66,21 @@ jobs:
           filters: |
             src:
               - 'packages/**'
+              - 'app/**'
+              - 'docs/**'
+              - 'assets/**'
             deps:
               - 'pnpm-lock.yaml'
               - 'package.json'
+              - 'pnpm-workspace.yaml'
             lint:
               - 'eslint.config.mjs'
               - 'tsconfig.json'
             workflows:
               - '.github/workflows/**'
               - '.github/actions/**'
+              - 'scripts/**'
+              - 'deno.json'
 
   # ─── QUALITY ASSURANCE ───────────────────────────────────────
   quality:
@@ -87,7 +93,7 @@ jobs:
       contents: read
     steps:
       - name: Harden Runner 🛡️
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
           egress-policy: audit
 
@@ -98,10 +104,10 @@ jobs:
           fetch-depth: 1
 
       - name: Install pnpm 📦
-        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
 
       - name: Setup Node.js 🟢
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
@@ -109,25 +115,47 @@ jobs:
       - name: Install dependencies 🛠️
         run: pnpm install --frozen-lockfile --prefer-offline
 
+      - name: Build Project 🏗️
+        if: needs.changes.outputs.src == 'true' || needs.changes.outputs.deps == 'true'
+        run: pnpm build
+
+      - name: Verify website and documentation
+        if: needs.changes.outputs.src == 'true' || needs.changes.outputs.deps == 'true'
+        run: |
+          pnpm --filter git-hygiene-app test:seo
+
+      - name: Test release guards
+        run: node --test scripts/tests/*.test.mjs
+
+      - name: Build sandbox dependency for workflow-only checks
+        if: needs.changes.outputs.src != 'true' && needs.changes.outputs.deps != 'true'
+        run: pnpm --filter @chitrank2050/git-hygiene-core build
+
+      - name: Test live sandbox validation
+        run: pnpm --filter git-hygiene-app test:sandbox
+
       - name: Run Parallel Checks ⚡️
         id: run_checks
         env:
           HAS_SRC: ${{ needs.changes.outputs.src }}
-          HAS_DEPS: ${{ needs.changes.outputs.deps }}
         run: |
           echo "::group::Starting Parallel Checks"
           mkdir -p .ci-status
-          if [ "$HAS_SRC" == "true" ] || [ "$HAS_DEPS" == "true" ]; then
-            (pnpm build > .ci-status/build.log 2>&1 || echo "1" > .ci-status/build.fail) &
-          fi
           if [ "$HAS_SRC" == "true" ]; then
             (pnpm test:cov > .ci-status/test.log 2>&1 || echo "1" > .ci-status/test.fail) &
           fi
           (pnpm lint > .ci-status/lint.log 2>&1 || echo "1" > .ci-status/lint.fail) &
           (pnpm lint:md > .ci-status/md.log 2>&1 || echo "1" > .ci-status/md.fail) &
-          curl -L https://github.com/google/osv-scanner/releases/download/v2.3.5/osv-scanner_linux_amd64 -o osv-scanner
-          chmod +x osv-scanner
-          (./osv-scanner --lockfile=pnpm-lock.yaml > .ci-status/osv.log 2>&1 || echo "1" > .ci-status/osv.fail) &
+          (
+            if curl -sSfL --retry 5 --retry-delay 2 --retry-all-errors \
+              https://github.com/google/osv-scanner/releases/download/v2.3.5/osv-scanner_linux_amd64 -o osv-scanner; then
+              chmod +x osv-scanner
+              ./osv-scanner --lockfile=pnpm-lock.yaml > .ci-status/osv.log 2>&1 || echo "1" > .ci-status/osv.fail
+            else
+              echo "❌ Failed to download osv-scanner after 5 retries" > .ci-status/osv.log
+              echo "1" > .ci-status/osv.fail
+            fi
+          ) &
           wait
           echo "::endgroup::"
 
@@ -146,7 +174,7 @@ jobs:
 
       - name: Upload coverage to Codecov 📊
         if: needs.changes.outputs.src == 'true'
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/*/coverage/lcov.info
@@ -160,7 +188,7 @@ jobs:
       contents: read
     steps:
       - name: Harden Runner 🛡️
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
           egress-policy: audit
 

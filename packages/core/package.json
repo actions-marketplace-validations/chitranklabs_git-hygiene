@@ -1,6 +1,6 @@
 {
   "name": "@chitrank2050/git-hygiene-core",
-  "version": "0.4.12",
+  "version": "0.5.1",
   "description": "Core validation engine for git-hygiene. Validates conventional commits, branch names, and PR titles.",
   "author": {
     "name": "Chitrank Agnihotri",
@@ -42,8 +42,9 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean --minify",
+    "clean": "rm -rf dist coverage",
     "test": "node --experimental-strip-types --test tests/**/*.test.ts",
-    "test:cov": "mkdir -p coverage && node --experimental-strip-types --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage/lcov.info tests/**/*.test.ts",
+    "test:cov": "mkdir -p coverage && node --experimental-strip-types --test --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info tests/**/*.test.ts",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",

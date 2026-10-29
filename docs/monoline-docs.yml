@@ -1,0 +1,72 @@
+title: git-hygiene
+site: https://docs.githygiene.chitrankagnihotri.com
+base: /
+description: Validate Git branches, commit messages and pull request titles with one shared configuration.
+contentDirectory: ./content
+assetsDirectory: ../assets
+outDirectory: ./dist
+stylesheet: /assets/docs.css
+appearance:
+  defaultMode: system
+  radius: 0.375
+  fonts:
+    body:
+      family: Geist
+    code:
+      family: JetBrains Mono
+seo:
+  titleTemplate: '%s | git-hygiene docs'
+  socialImage: /assets/banner.png
+  socialImageAlt: git-hygiene — commit, branch and pull request title validation
+  author: &docsOwner
+    type: Person
+    name: Chitrank Agnihotri
+    url: https://chitrankagnihotri.com
+    sameAs:
+      - https://github.com/chitrank2050
+      - https://www.linkedin.com/in/chitrank-agnihotri/
+  publisher: *docsOwner
+branding:
+  favicon: /assets/logo.png
+header:
+  links:
+    - label: Website
+      href: https://githygiene.chitrankagnihotri.com/
+    - label: GitHub
+      href: https://github.com/chitranklabs/git-hygiene
+footer:
+  text: Released under the MIT License.
+  links:
+    - label: Created by Chitrank Agnihotri
+      href: https://chitrankagnihotri.com
+    - label: Changelog
+      href: https://githygiene.chitrankagnihotri.com/changelog
+content:
+  copyPageLink: true
+  editLink:
+    href: https://github.com/chitranklabs/git-hygiene/edit/main/docs/content/{path}
+navigation:
+  - label: Introduction
+    href: /
+  - label: Quickstart
+    href: /getting-started
+  - label: Integrations
+    items:
+      - label: Git hooks
+        href: /guides/git-hooks
+      - label: GitHub Actions
+        href: /guides/github-actions
+  - label: Reference
+    items:
+      - label: Commands
+        href: /reference/cli
+      - label: Configuration
+        href: /reference/configuration
+      - label: Core API
+        href: /reference/core-api
+  - label: Troubleshooting
+    href: /troubleshooting
+  - label: Contributing
+    href: /development
+  - label: Website deployment
+    href: /deployment

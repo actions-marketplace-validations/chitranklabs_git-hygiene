@@ -5,6 +5,10 @@
 /.github/workflows/ @chitrank2050
 /lefthook.yml @chitrank2050
 /renovate.json @chitrank2050
+/cliff.toml @chitrank2050
+/turbo.json @chitrank2050
+/pnpm-workspace.yaml @chitrank2050
+/action.yml @chitrank2050
 
 # 🛡️ Security & Governance
 /SECURITY.md @chitrank2050
@@ -12,7 +16,8 @@
 /CODE_OF_CONDUCT.md @chitrank2050
 /.github/CODEOWNERS @chitrank2050
 
-# 📦 Packages
+# 📦 Packages & Applications
 /packages/core/ @chitrank2050
 /packages/cli/ @chitrank2050
-/packages/action/ @chitrank2050
+/app/ @chitrank2050
+/scripts/ @chitrank2050

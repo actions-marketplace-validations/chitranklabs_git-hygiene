@@ -4,9 +4,7 @@
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "allowJs": true,
     "checkJs": true,
     /* Strictness: */
@@ -28,5 +26,6 @@
     "types": ["node"],
     "noEmit": true,
     "ignoreDeprecations": "6.0"
-  }
+  },
+  "exclude": ["node_modules", "dist", "packages/*/dist", "app", ".next", ".turbo"]
 }

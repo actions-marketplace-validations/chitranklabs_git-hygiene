@@ -1,12 +1,11 @@
 {
   "name": "@chitrank2050/git-hygiene",
-  "version": "0.4.12",
-  "nodeModulesDir": "auto",
+  "version": "0.5.1",
   "description": "The ultimate zero-dependency metadata validator for modern Git workflows. CLI tool for enforcing conventional commits and branch naming.",
   "license": "MIT",
   "exports": "./src/cli.ts",
   "imports": {
-    "@chitrank2050/git-hygiene-core": "jsr:@chitrank2050/git-hygiene-core@^0.4.4",
+    "@chitrank2050/git-hygiene-core": "jsr:@chitrank2050/git-hygiene-core@^0.5.1",
     "picocolors": "npm:picocolors@^1.1.1"
   },
   "publish": {

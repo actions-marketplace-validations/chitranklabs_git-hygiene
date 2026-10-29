@@ -16,7 +16,7 @@
 'pkg/action':
   - changed-files:
       - any-glob-to-any-file:
-          - 'packages/action/**'
+          - 'action.yml'
 
 'area/ci':
   - changed-files:

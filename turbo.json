@@ -2,16 +2,20 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["eslint.config.mjs", ".prettierrc", "tsconfig.json"],
   "tasks": {
+    "clean": {
+      "cache": false
+    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": ["NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN", "VERCEL_ENV"]
     },
     "test": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "inputs": ["src/**/*.ts", "tests/**/*.ts"]
     },
     "test:cov": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "inputs": ["src/**/*.ts", "tests/**/*.ts"],
       "outputs": ["coverage/**"]
     },

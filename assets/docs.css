@@ -1,0 +1,20 @@
+@import './theme-tokens.css';
+
+/* Use the shared palette with Monoline Docs' system/light/dark color scheme. */
+:root {
+  color-scheme: light dark;
+  --background: light-dark(var(--site-light-background), var(--site-dark-background));
+  --foreground: light-dark(var(--site-light-foreground), var(--site-dark-foreground));
+  --border: light-dark(var(--site-light-border), var(--site-dark-border));
+  --surface: light-dark(var(--site-light-surface), var(--site-dark-surface));
+  --accent: light-dark(var(--site-light-accent), var(--site-dark-accent));
+  --muted: light-dark(var(--site-light-muted-foreground), var(--site-dark-muted-foreground));
+  --font-body: Geist, system-ui, sans-serif;
+  --font-code: 'JetBrains Mono', ui-monospace, monospace;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}

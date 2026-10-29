@@ -6,45 +6,46 @@
 # Runs in parallel: secrets scan first, then per-file linting.
 pre-commit:
   parallel: true
-  commands:
+  jobs:
     # 1. Block commits that contain secrets/credentials
-    secrets:
+    - name: secrets
       run: if command -v gitleaks > /dev/null; then gitleaks protect --staged --redact -v; else echo "gitleaks not found, skipping secrets scan. Install with 'brew install gitleaks'"; fi
 
     # 2. TypeScript files - ESLint fix + Prettier format
-    lint-ts:
+    - name: lint-ts
       glob: '*.ts'
       run: pnpm exec eslint {staged_files} --fix && pnpm exec prettier --write {staged_files}
       stage_fixed: true
 
     # 3. Markdown files - markdownlint fix + Prettier format
-    lint-md:
+    - name: lint-md
       glob: '*.md'
       run: pnpm exec markdownlint --fix {staged_files} && pnpm exec prettier --write {staged_files}
       stage_fixed: true
 
     # 4. JSON / YAML - Prettier format only
-    lint-json-yml:
+    - name: lint-json-yml
       glob: '*.{json,yml,yaml}'
       run: pnpm exec prettier --write {staged_files}
       stage_fixed: true
 
     # 5. GitHub Actions - Security linting
-    lint-actions:
+    - name: lint-actions
       glob: '.github/workflows/*.yml'
-      run: if command -v zizmor > /dev/null; then zizmor {staged_files}; else echo "zizmor not found, skipping actions lint. Install with 'brew install zizmor'"; fi
+      run: >-
+        if command -v zizmor > /dev/null; then zizmor {staged_files}; else echo "zizmor not found, skipping actions lint. Install with 'brew install zizmor'"; fi
 
 commit-msg:
-  commands:
-    hygiene:
+  jobs:
+    - name: hygiene
       run: node --experimental-strip-types packages/cli/src/cli.ts commit {1}
 
 # ─── pre-push ────────────────────────────────────────────────
 # Runs unit tests before any push reaches the remote.
 pre-push:
-  commands:
-    tests:
+  jobs:
+    - name: tests
       run: pnpm test
 
-    branch-name:
+    - name: branch-name
       run: pnpm lint:branch

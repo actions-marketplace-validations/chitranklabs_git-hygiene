@@ -1,10 +1,22 @@
 packages:
   - packages/*
+  - app
+  - docs
 overrides:
   esbuild: '^0.28.1'
   js-yaml: '^5.0.0'
   linkify-it: '^6.0.0'
   markdown-it: '^15.0.0'
+  # Patched transitive versions for advisories detected by the CI OSV scan.
+  'brace-expansion@5.0.9': '5.0.12'
+  'katex@0.16.47': '0.18.2'
+  'sharp@0.35.4': '0.35.5'
+  'shell-quote@1.10.0': '1.11.0'
+  'smol-toml@1.7.2': '1.9.0'
+  'source-map-js@1.2.1': '1.2.2'
 allowBuilds:
   esbuild: true
   lefthook: true
+minimumReleaseAgeExclude:
+  - '@chitrank2050/monoline-ui@0.3.0 || 0.5.0'
+  - '@chitrank2050/monoline-docs@0.2.0 || 0.3.0'

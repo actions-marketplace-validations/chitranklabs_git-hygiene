@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "pnpm --dir .. install --frozen-lockfile",
+  "buildCommand": "pnpm --dir .. exec turbo build --filter=git-hygiene-app",
+  "ignoreCommand": "sh \"$(git rev-parse --show-toplevel)/scripts/vercel-ignore.sh\""
+}

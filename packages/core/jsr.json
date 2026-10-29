@@ -1,16 +1,15 @@
 {
   "name": "@chitrank2050/git-hygiene-core",
-  "version": "0.4.12",
-  "nodeModulesDir": "auto",
+  "version": "0.5.1",
   "description": "The lightweight, zero-dependency validation engine behind git-hygiene. Core logic for branch and commit message enforcement.",
   "license": "MIT",
   "exports": "./src/index.ts",
   "imports": {
-    "@commitlint/config-conventional": "npm:@commitlint/config-conventional@^20.5.0",
-    "@commitlint/lint": "npm:@commitlint/lint@^20.5.0",
-    "conventional-changelog-conventionalcommits": "npm:conventional-changelog-conventionalcommits@^9.3.1",
-    "conventional-changelog-preset-loader": "npm:conventional-changelog-preset-loader@^5.0.0",
-    "conventional-recommended-bump": "npm:conventional-recommended-bump@^11.2.0"
+    "@commitlint/config-conventional": "npm:@commitlint/config-conventional@^21.0.0",
+    "@commitlint/lint": "npm:@commitlint/lint@^21.0.0",
+    "conventional-changelog-conventionalcommits": "npm:conventional-changelog-conventionalcommits@^10.0.0",
+    "conventional-changelog-preset-loader": "npm:conventional-changelog-preset-loader@^6.0.0",
+    "conventional-recommended-bump": "npm:conventional-recommended-bump@^12.0.0"
   },
   "publish": {
     "exclude": [

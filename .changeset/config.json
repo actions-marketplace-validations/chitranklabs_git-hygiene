@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [["@chitrank2050/git-hygiene", "@chitrank2050/git-hygiene-core"]],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": ["git-hygiene-app"],
+  "privatePackages": {
+    "version": false,
+    "tag": false
+  }
+}

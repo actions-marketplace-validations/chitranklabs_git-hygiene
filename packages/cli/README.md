@@ -1,153 +1,114 @@
 <div align="center">
   <h1>@chitrank2050/git-hygiene 🌊</h1>
 
-**The ultimate zero-dependency metadata validator for modern Git workflows.**
+**Validate commits, branches, and pull request titles from the command line.**
 
-[![NPM Version](https://img.shields.io/npm/v/@chitrank2050/git-hygiene?color=blue&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene)
-[![JSR Version](https://jsr.io/badges/@chitrank2050/git-hygiene)](https://jsr.io/@chitrank2050/git-hygiene)
-[![License](https://img.shields.io/github/license/chitranklabs/git-hygiene)](./LICENSE)
+[Website](https://githygiene.chitrankagnihotri.com/) · [Docs](https://docs.githygiene.chitrankagnihotri.com/) · [Quickstart](https://docs.githygiene.chitrankagnihotri.com/getting-started/) · [npm](https://www.npmjs.com/package/@chitrank2050/git-hygiene)
 
-  <a href="https://ko-fi.com/D1D71U581P" target="_blank">
-      <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Buy me a coffee at ko-fi.com">
-    </a>
+[![NPM Version](https://img.shields.io/npm/v/@chitrank2050/git-hygiene?color=blue&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene) [![JSR Version](https://jsr.io/badges/@chitrank2050/git-hygiene)](https://jsr.io/@chitrank2050/git-hygiene) [![License](https://img.shields.io/github/license/chitranklabs/git-hygiene)](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE)
+
 </div>
 
-<br />
+`@chitrank2050/git-hygiene` is the command-line package. Install it in the
+repository whose commits, branches and PR titles you want to check. For embedding
+validation in a Node.js tool, use [Core](https://www.npmjs.com/package/@chitrank2050/git-hygiene-core).
 
-`git-hygiene` is a high-performance, **zero-dependency** CLI tool that enforces **Conventional Commits**, **branch naming patterns**, and **PR titles** using a single, unified engine. Built natively for **Node.js 24 (Stable)** with microsecond startup times.
+## Installation
 
----
+<a id="-installation"></a>
 
-### 🧩 Ecosystem
-
-| Package                            | Role              | Status                                                                                                                                                                                                                                                                   |
-| :--------------------------------- | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **@chitrank2050/git-hygiene**      | CLI & Action      | [![npm](https://img.shields.io/npm/v/@chitrank2050/git-hygiene?color=blue&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene) [![jsr](https://jsr.io/badges/@chitrank2050/git-hygiene)](https://jsr.io/@chitrank2050/git-hygiene)                       |
-| **@chitrank2050/git-hygiene-core** | Standalone Engine | [![npm](https://img.shields.io/npm/v/@chitrank2050/git-hygiene-core?color=orange&label=npm)](https://www.npmjs.com/package/@chitrank2050/git-hygiene-core) [![jsr](https://jsr.io/badges/@chitrank2050/git-hygiene-core)](https://jsr.io/@chitrank2050/git-hygiene-core) |
-
----
-
-## 📦 Installation
+Use Node.js 24 or newer:
 
 ```bash
-# Recommended: Install as a dev dependency
-pnpm add -D @chitrank2050/git-hygiene
-
-# Or using JSR
-npx jsr add @chitrank2050/git-hygiene
-
-# Or run instantly via npx
-npx @chitrank2050/git-hygiene --help
+npm install --save-dev @chitrank2050/git-hygiene
 ```
 
-## 🛠️ Commands
+For pnpm, use `pnpm add -D @chitrank2050/git-hygiene`.
+The package is also [published on JSR](https://jsr.io/@chitrank2050/git-hygiene).
 
-### `branch` 🌿
+## Commands
 
-Validates the current checked-out branch name against your project rules. Perfect for `pre-push` hooks.
+<a id="husky"></a>
+
+<a id="--json-"></a>
+
+<a id="bump-"></a>
+
+<a id="title--️"></a>
+
+<a id="commit--"></a>
+
+<a id="branch-"></a>
+
+<a id="️-commands"></a>
+
+Run from the directory containing your repository's `package.json`:
 
 ```bash
-npx @chitrank2050/git-hygiene branch
+npx --no-install git-hygiene commit "feat: add search"
+npx --no-install git-hygiene branch "feat/add-search"
+npx --no-install git-hygiene title "feat(search): add filters"
 ```
 
-### `commit <text|file>` 📜
+Valid metadata exits with status `0`; invalid metadata or errors exit with `1`.
+Try `commit "added search"` to see a failed validation with default rules.
+With pnpm, replace `npx --no-install` with `pnpm exec`.
 
-Validates a commit message string or a file (like `.git/COMMIT_EDITMSG`). Perfect for `commit-msg` hooks.
+| Command                 | Behavior                                                      |
+| ----------------------- | ------------------------------------------------------------- |
+| `branch [name]`         | Validate a supplied name or the current Git branch            |
+| `commit <text-or-file>` | Validate a message or read a commit-message file              |
+| `title <text>`          | Check PR title format, not every commitlint rule              |
+| `bump`                  | Recommend a release type from Git history, without publishing |
 
-```bash
-npx @chitrank2050/git-hygiene commit "feat: add super speed"
-# OR
-npx @chitrank2050/git-hygiene commit .git/COMMIT_EDITMSG
-```
+Use `--json` for machine-readable output. A bump recommendation is a release
+**type**, not a complete version; no qualifying history may yield no `releaseType`.
+See the [command reference](https://docs.githygiene.chitrankagnihotri.com/reference/cli/)
+for examples and exit behavior.
 
-### `title <text>` 🏷️
+## Configuration
 
-Validates a Pull Request title string.
+<a id="️-configuration"></a>
 
-```bash
-npx @chitrank2050/git-hygiene title "feat(cli): add colors"
-```
+The CLI reads the `git-hygiene` property of the current directory's `package.json`;
+it does not search parent directories. Ignored branches are exact names, not globs.
+See [configuration](https://docs.githygiene.chitrankagnihotri.com/reference/configuration/)
+for defaults, preset behavior and raw rule overrides.
 
-### `bump` 🚀
+## Git Hook Integration
 
-Suggests the next semantic version number (patch, minor, or major) based on your commit history since the last tag.
+<a id="lefthook-recommended"></a>
 
-```bash
-npx @chitrank2050/git-hygiene bump
-```
+<a id="-git-hook-integration"></a>
 
-### `--json` 🤖
+Pass the quoted message file path to `commit` from a `commit-msg` hook. Use
+`branch` in `pre-push` for local feedback. Follow the complete
+[Lefthook or Husky guide](https://docs.githygiene.chitrankagnihotri.com/guides/git-hooks/)
+to install and verify the hooks. CI checks are still needed when policy must be enforced.
 
-Output results as machine-readable JSON. Perfect for CI/CD pipelines.
+## Technical Specification
 
-```bash
-npx @chitrank2050/git-hygiene bump --json
-npx @chitrank2050/git-hygiene title "feat: test" --json
-```
+- npm exports ESM JavaScript; the CLI depends on Core and picocolors.
+- Git is required for current-branch detection and release recommendations.
+- The GitHub Action is distributed separately from the repository and runs its
+  committed bundle. See [the Action guide](https://docs.githygiene.chitrankagnihotri.com/guides/github-actions/).
 
-## ⚙️ Configuration
+## Documentation
 
-`git-hygiene` is designed to be zero-config, but you can easily customize the rules by adding a `git-hygiene` block to your root `package.json`.
+<a id="-license"></a>
 
-| Property          | Description                            | Default                                     | Possible Values                  |
-| ----------------- | -------------------------------------- | ------------------------------------------- | -------------------------------- |
-| `types`           | Allowed commit types                   | `feat`, `fix`, `chore`, etc.                | `string[]`                       |
-| `ignoreBranches`  | Branches to skip validation            | `main`, `master`, `development`, `gh-pages` | `string[]`                       |
-| `maxHeaderLength` | Max length of the commit header        | `100`                                       | `number`                         |
-| `maxBodyLength`   | Max length of a single body line       | `1000`                                      | `number`                         |
-| `minBodyLength`   | Min length of the commit body          | `0`                                         | `number`                         |
-| `typeCase`        | Case requirement for types             | `lower-case`                                | `lower-case`, `upper-case`, etc. |
-| `scopeCase`       | Case requirement for scopes            | `lower-case`                                | `lower-case`, `upper-case`, etc. |
-| `allowEmptyScope` | Whether scope is optional              | `true`                                      | `boolean`                        |
-| `subjectFullStop` | Whether subject can end with a period  | `never`                                     | `always`, `never`                |
-| `extends`         | Standard configs to extend from        | `[]`                                        | `string[]`                       |
-| `rules`           | Raw commitlint rules to merge/override | `{}`                                        | `Record<string, unknown>`        |
+<a id="-ecosystem"></a>
 
-```json
-{
-  "git-hygiene": {
-    "extends": ["@commitlint/config-conventional"],
-    "types": ["feat", "fix", "chore", "docs", "refactor", "test", "renovate"],
-    "ignoreBranches": ["main", "develop", "release/*"],
-    "maxHeaderLength": 100,
-    "allowEmptyScope": false,
-    "rules": {
-      "subject-case": [2, "always", "sentence-case"]
-    }
-  }
-}
-```
+[Quickstart](https://docs.githygiene.chitrankagnihotri.com/getting-started/) ·
+[Troubleshooting](https://docs.githygiene.chitrankagnihotri.com/troubleshooting/) ·
+[Contributor guide](https://github.com/chitranklabs/git-hygiene/blob/main/CONTRIBUTING.md)
 
-## ⚓ Git Hook Integration
+Licensed under [MIT](https://github.com/chitranklabs/git-hygiene/blob/main/LICENSE).
 
-### Lefthook (Recommended)
+## Support
 
-Add this to your `lefthook.yml` for blazing-fast enforcement:
+If this project is useful to you, you can support its maintenance on Ko-fi.
 
-```yaml
-commit-msg:
-  commands:
-    hygiene:
-      run: npx @chitrank2050/git-hygiene commit {1}
+[![Support on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D71U581P)
 
-pre-push:
-  commands:
-    hygiene:
-      run: npx @chitrank2050/git-hygiene branch
-```
-
-### Husky
-
-For projects using Husky 9+:
-
-```bash
-# .husky/commit-msg
-npx @chitrank2050/git-hygiene commit $1
-
-# .husky/pre-push
-npx @chitrank2050/git-hygiene branch
-```
-
-## 📜 License
-
-MIT - see [LICENSE](../../LICENSE) for details.
+<p align="center">❤️ Developed by <a href="https://chitrankagnihotri.com">Chitrank Agnihotri</a></p>

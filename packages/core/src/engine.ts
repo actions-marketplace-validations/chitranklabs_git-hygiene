@@ -2,6 +2,8 @@ import lint from '@commitlint/lint';
 import { loadConfig } from './config.ts';
 import type { ValidationResult, ResolvedConfig } from './types.ts';
 import { Bumper } from 'conventional-recommended-bump';
+import conventionalCommitsPreset from 'conventional-changelog-conventionalcommits';
+import { loadPreset } from 'conventional-changelog-preset-loader';
 
 /**
  * @description
@@ -128,25 +130,37 @@ export async function getRecommendedBump(configOverride?: ResolvedConfig): Promi
   const config = configOverride || (await loadConfig());
   const bumper = new Bumper(process.cwd());
 
-  if (config.parserPreset) {
-    // If it's a function (dynamic preset), execute it and use the resulting config
-    if (typeof config.parserPreset === 'function') {
-      const preset = await config.parserPreset();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      bumper.config(preset as any);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const bumperAny = bumper as unknown as Record<string, any>;
+
+  if (
+    config.parserPreset === 'conventional-changelog-conventionalcommits' ||
+    config.parserPreset === 'conventionalcommits' ||
+    !config.parserPreset
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const preset = (await conventionalCommitsPreset()) as Record<string, any>;
+    bumperAny.whatBump = preset.whatBump;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    bumper.config(preset as any);
+  } else if (typeof config.parserPreset === 'function') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const preset = (await config.parserPreset()) as Record<string, any>;
+    if (preset.whatBump) {
+      bumperAny.whatBump = preset.whatBump;
     }
-    // If it's already a resolved object, use it
-    else if (typeof config.parserPreset === 'object') {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      bumper.config(config.parserPreset as any);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    bumper.config(preset as any);
+  } else if (typeof config.parserPreset === 'object') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const preset = config.parserPreset as Record<string, any>;
+    if (preset.whatBump) {
+      bumperAny.whatBump = preset.whatBump;
     }
-    // If it's a string, load it as a named preset
-    else {
-      await bumper.loadPreset(config.parserPreset);
-    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    bumper.config(config.parserPreset as any);
   } else {
-    // Fallback to conventionalcommits if no preset is provided
-    await bumper.loadPreset('conventionalcommits');
+    await bumper.loadPreset(config.parserPreset);
   }
 
   return (await bumper.bump()) as { releaseType: string; reason: string; level: number };
@@ -159,12 +173,14 @@ export async function getRecommendedBump(configOverride?: ResolvedConfig): Promi
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function loadParserPreset(preset: string | unknown): Promise<any> {
+  if (preset === 'conventional-changelog-conventionalcommits') {
+    return conventionalCommitsPreset;
+  }
   if (typeof preset === 'string') {
     // Dynamic import of arbitrary strings is unanalyzable by JSR,
     // but moving it to a private helper helps avoid score penalties.
     try {
-      const mod = await import(preset);
-      return mod.default ?? mod;
+      return await loadPreset(preset);
     } catch (err) {
       throw new Error(
         `Failed to load parser preset "${preset}": ${err instanceof Error ? err.message : String(err)}`,

@@ -2,9 +2,10 @@
 # Release Preparation Workflow
 #
 # Triggered manually to:
-#   1. Bump version in package.json and workspace packages.
-#   2. Update CHANGELOG.md using git-cliff.
-#   3. Open a Release PR for review.
+#   1. Apply Changesets version bumps to workspace packages.
+#   2. Synchronize JSR versions and root package.json.
+#   3. Update CHANGELOG.md using git-cliff.
+#   4. Open a Release PR for review.
 # =============================================================
 
 name: Release 1 - Prepare PR 📝
@@ -13,23 +14,29 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Manual tag to release (e.g. v0.1.0). Leave empty to use git-hygiene recommendation.'
+        description: 'Manual tag override (e.g. v0.5.0). Leave empty to use Changesets plan.'
         required: false
+
+permissions: {}
+
+concurrency:
+  group: release-prepare
+  cancel-in-progress: false
 
 jobs:
   prepare:
     name: Prepare Release PR 🚀
-    if: github.actor == github.repository_owner || github.actor == 'chitrank2050'
+    if: github.ref == 'refs/heads/main' && (github.actor == github.repository_owner || github.actor == 'chitrank2050')
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
     env:
       NODE_VERSION: 24
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Harden Runner 🛡️
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
           egress-policy: audit
 
@@ -39,23 +46,34 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Install pnpm 📦
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 12.14.0
+          run_install: false
+
       - name: Setup Node.js 🟢
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
 
-      - name: Get Recommended Bump 🌊
-        id: hygiene
-        uses: ./
+      - name: Setup Deno 🦕
+        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
         with:
-          command: 'bump'
+          deno-version: v2.9.7
+
+      - name: Install dependencies 📥
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Create Bot Token 🤖🔑
         id: generate_token
-        uses: ./.github/actions/setup-bot
+        uses: $/.github/actions/setup-bot
         with:
           client-id: ${{ secrets.CHITRANK_BOT_CLIENT_ID }}
           private-key: ${{ secrets.CHITRANK_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Configure Authenticated Git 🔧
         env:
@@ -64,54 +82,43 @@ jobs:
         run: |
           git remote set-url origin "https://x-access-token:${TOKEN}@github.com/${REPO}"
 
-      - name: Determine New Version 🔢
+      - name: Apply Version Bumps 📦
         id: vars
         env:
           MANUAL_TAG: ${{ github.event.inputs.tag_name }}
-          BUMP: ${{ steps.hygiene.outputs.releaseType }}
         run: |
-          CURRENT_VERSION=$(jq -r .version package.json)
+          OLD_VERSION=$(jq -r .version packages/cli/package.json)
 
           if [ -n "$MANUAL_TAG" ]; then
-            NEW_VERSION=$(echo "$MANUAL_TAG" | sed 's/^v//')
-            echo "Using manual version: $NEW_VERSION"
+            [[ "$MANUAL_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo '::error::Expected a stable vX.Y.Z tag'; exit 1; }
+            CLEAN_TAG="${MANUAL_TAG#v}"
+            echo "Applying manual version override: $CLEAN_TAG"
+            for pkg in packages/cli packages/core; do
+              jq --arg version "$CLEAN_TAG" '.version = $version' "$pkg/package.json" > "$pkg/package.json.tmp" && mv "$pkg/package.json.tmp" "$pkg/package.json"
+            done
+            node scripts/sync-jsr-versions.mjs
           else
-            echo "Calculating version from bump: $BUMP"
-            NEW_VERSION=$(node -e "
-              const semver = '$CURRENT_VERSION'.split('.').map(Number);
-              const type = '$BUMP';
-              if (type === 'major') semver[0]++, semver[1] = 0, semver[2] = 0;
-              else if (type === 'minor') semver[1]++, semver[2] = 0;
-              else semver[2]++;
-              console.log(semver.join('.'));
-            ")
-            echo "Calculated version: $NEW_VERSION"
+            echo "Applying Changesets versioning..."
+            pnpm version:packages
           fi
 
-          echo "clean_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag_name=v$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          NEW_VERSION=$(jq -r .version packages/cli/package.json)
+          echo "Previous version: $OLD_VERSION"
+          echo "Target version:   $NEW_VERSION"
 
-      - name: Sync Versions 📦
-        env:
-          CLEAN_VERSION: ${{ steps.vars.outputs.clean_version }}
-        run: |
-          echo "Bumping monorepo to $CLEAN_VERSION"
-
-          # Bump root
-          jq ".version = \"$CLEAN_VERSION\"" package.json > package.json.tmp && mv package.json.tmp package.json
-
-          # Bump workspace packages (NPM & JSR)
-          for pkg_dir in packages/*; do
-            if [ -f "$pkg_dir/package.json" ]; then
-              jq ".version = \"$CLEAN_VERSION\"" "$pkg_dir/package.json" > "$pkg_dir/package.json.tmp" && mv "$pkg_dir/package.json.tmp" "$pkg_dir/package.json"
-            fi
-            if [ -f "$pkg_dir/jsr.json" ]; then
-              jq ".version = \"$CLEAN_VERSION\"" "$pkg_dir/jsr.json" > "$pkg_dir/jsr.json.tmp" && mv "$pkg_dir/jsr.json.tmp" "$pkg_dir/jsr.json"
-            fi
-          done
+          if [ "$OLD_VERSION" == "$NEW_VERSION" ]; then
+            echo "release_ready=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️ No package versions changed. Nothing to release."
+          else
+            node --input-type=module -e 'import assert from "node:assert/strict"; const [oldVersion, nextVersion] = process.argv.slice(1).map(v => v.split(".").map(Number)); const index = nextVersion.findIndex((v, i) => v !== oldVersion[i]); assert(index >= 0 && nextVersion[index] > oldVersion[index], "Release version must increase");' "$OLD_VERSION" "$NEW_VERSION"
+            echo "release_ready=true" >> "$GITHUB_OUTPUT"
+            echo "clean_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+            echo "tag_name=v$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Update CHANGELOG.md 📝
-        uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4.8.0
+        if: steps.vars.outputs.release_ready == 'true'
+        uses: orhun/git-cliff-action@a9a95522b26fe6403f7bb24031f21fb573d0f5ff # v4.9.1
         id: git-cliff
         with:
           config: cliff.toml
@@ -119,19 +126,39 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
 
+      - name: Re-lock and Format Release Files 🎨
+        if: steps.vars.outputs.release_ready == 'true'
+        run: |
+          pnpm install --lockfile-only --ignore-scripts --prefer-offline
+          pnpm exec prettier --write CHANGELOG.md package.json 'packages/*/package.json' 'packages/*/jsr.json' 'packages/*/CHANGELOG.md' --no-error-on-unmatched-pattern
+
+      # The commit-msg hook runs the source CLI, whose core import resolves to dist.
+      # Build only that dependency; release preparation does not need the website.
+      - name: Build release hook dependency 🏗️
+        if: steps.vars.outputs.release_ready == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.vars.outputs.tag_name }}
+        run: |
+          node scripts/release-artifacts.mjs check
+          pnpm --filter @chitrank2050/git-hygiene-core build
+          pnpm build:action
+
       - name: Create Pull Request for Release 🔀
         id: cpr
+        if: steps.vars.outputs.release_ready == 'true'
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           token: ${{ steps.generate_token.outputs.token }}
           commit-message: 'chore(release): bump version to ${{ steps.vars.outputs.tag_name }}'
           title: 'chore(release): 🚀 ${{ steps.vars.outputs.tag_name }}'
           body: |
-            <!-- autofill-start -->
-            - chore(release): update CHANGELOG.md
-            - chore(release): sync workspace versions (NPM & JSR)
-            - chore(release): bump recommendation from git-hygiene (${{ steps.hygiene.outputs.releaseType }})
-            <!-- autofill-end -->
+            ## Monorepo Release ${{ steps.vars.outputs.tag_name }}
+
+            This release PR was generated with **Changesets** and **git-cliff**:
+            - Synchronized packages: `@chitrank2050/git-hygiene` and `@chitrank2050/git-hygiene-core`
+            - Synchronized JSR configs: `packages/cli/jsr.json` and `packages/core/jsr.json`
+            - Generated root `CHANGELOG.md` and package changelogs.
+            - Note: `app/` web changelog is rendered dynamically on-the-fly at build time.
           labels: |
             chore
             release
@@ -140,7 +167,11 @@ jobs:
           delete-branch: true
           assignees: chitrank2050
           add-paths: |
+            dist/action.js
+            .changeset/*.md
             CHANGELOG.md
             package.json
             packages/*/package.json
             packages/*/jsr.json
+            packages/*/CHANGELOG.md
+            pnpm-lock.yaml

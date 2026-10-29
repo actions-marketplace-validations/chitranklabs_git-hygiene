@@ -1,0 +1,10 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/assets/**"],
+      "outputs": ["dist/**"],
+      "env": ["NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN", "VERCEL_ENV"]
+    }
+  }
+}

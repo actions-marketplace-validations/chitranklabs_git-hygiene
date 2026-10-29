@@ -1,0 +1,7 @@
+{
+  "workspace": ["./packages/core", "./packages/cli"],
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "types": ["npm:@types/node@^26.0.0"]
+  }
+}

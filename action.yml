@@ -1,5 +1,7 @@
+# yaml-language-server: $schema=https://www.schemastore.org/github-action.json
+
 name: 'Git Hygiene Validator'
-description: 'Zero-dependency metadata validator for Commits, Branches, and PR Titles'
+description: 'Zero-dependency metadata validator for commits, branches, and PR titles'
 author: 'Chitrank Agnihotri'
 
 branding:
@@ -8,19 +10,20 @@ branding:
 
 inputs:
   command:
-    description: 'The validation command to run (branch, title, commit, bump). Leave empty for "Omni-Mode" (auto-detect).'
+    description: 'The validation command to run: branch, title, commit, or bump. Defaults to "omni" for automatic detection.'
     required: false
     default: 'omni'
   value:
-    description: 'The value to validate (for title and commit commands)'
+    description: 'The value to validate for title and commit commands.'
     required: false
+    default: ''
 
 outputs:
   releaseType:
-    description: 'The recommended release type (patch, minor, major) for the bump command'
+    description: 'The recommended release type: patch, minor, or major.'
     value: ${{ steps.hygiene.outputs.releaseType }}
   reason:
-    description: 'The reason for the recommended bump'
+    description: 'The reason for the recommended release type.'
     value: ${{ steps.hygiene.outputs.reason }}
 
 runs:
@@ -29,49 +32,78 @@ runs:
     - id: hygiene
       name: Run Git Hygiene 🌊
       shell: bash
+      env:
+        HYGIENE_COMMAND: ${{ inputs.command }}
+        HYGIENE_VALUE: ${{ inputs.value }}
+        HYGIENE_PR_TITLE: ${{ github.event.pull_request.title }}
+        HYGIENE_HEAD_REF: ${{ github.head_ref }}
       run: |
-        # 1. Determine Binary (Prefer local build for dogfooding, else npx)
-        if [ -f "packages/cli/dist/cli.js" ]; then
-          HYGIENE_BIN="node packages/cli/dist/cli.js"
-        else
-          HYGIENE_BIN="npx --yes @chitrank2050/git-hygiene@latest"
-        fi
+        set -euo pipefail
 
-        COMMAND="${{ inputs.command }}"
+        run_hygiene() {
+          node "$GITHUB_ACTION_PATH/dist/action.js" "$@"
+        }
 
-        # 2. Handle "Omni-Mode" (Auto-detect)
-        if [ "$COMMAND" == "omni" ]; then
-          echo "::group::🌊 Git Hygiene Omni-Mode"
+        write_bump_outputs() {
+          local result
+          local release_type
+          local reason
+          local delimiter
 
-          # Validate PR Title if in PR context
-          if [ -n "${{ github.event.pull_request.title }}" ]; then
-            echo "Checking PR Title..."
-            $HYGIENE_BIN title "${{ github.event.pull_request.title }}"
+          result="$(run_hygiene bump --json)"
+          release_type="$(jq -er '.releaseType' <<<"$result")"
+          reason="$(jq -er '.reason' <<<"$result")"
+          delimiter="git_hygiene_reason_${RANDOM}_${RANDOM}"
+
+          if grep -Fxq "$delimiter" <<<"$reason"; then
+            echo "::error::Unable to write the reason output safely."
+            return 1
           fi
 
-          # Validate Branch Name if in PR context
-          if [ -n "${{ github.head_ref }}" ]; then
-            echo "Checking Branch Name..."
-            $HYGIENE_BIN branch "${{ github.head_ref }}"
-          fi
+          {
+            echo "releaseType=$release_type"
+            echo "reason<<$delimiter"
+            echo "$reason"
+            echo "$delimiter"
+          } >>"$GITHUB_OUTPUT"
+        }
 
-          # Always show Recommended Bump
-          echo "Calculating Recommended Bump..."
-          RESULT=$($HYGIENE_BIN bump --json)
-          echo "releaseType=$(echo $RESULT | jq -r .releaseType)" >> $GITHUB_OUTPUT
-          echo "reason=$(echo $RESULT | jq -r .reason)" >> $GITHUB_OUTPUT
-          $HYGIENE_BIN bump
+        case "$HYGIENE_COMMAND" in
+          omni)
+            echo "::group::🌊 Git Hygiene Omni-Mode"
 
-          echo "::endgroup::"
+            if [[ -n "$HYGIENE_PR_TITLE" ]]; then
+              echo "Checking PR title..."
+              run_hygiene title "$HYGIENE_PR_TITLE"
+            fi
 
-        # 3. Handle Explicit Commands
-        elif [ "$COMMAND" == "bump" ]; then
-          RESULT=$($HYGIENE_BIN bump --json)
-          echo "releaseType=$(echo $RESULT | jq -r .releaseType)" >> $GITHUB_OUTPUT
-          echo "reason=$(echo $RESULT | jq -r .reason)" >> $GITHUB_OUTPUT
-          $HYGIENE_BIN bump
-        elif [ -n "${{ inputs.value }}" ]; then
-          $HYGIENE_BIN $COMMAND "${{ inputs.value }}"
-        else
-          $HYGIENE_BIN $COMMAND
-        fi
+            if [[ -n "$HYGIENE_HEAD_REF" ]]; then
+              echo "Checking branch name..."
+              run_hygiene branch "$HYGIENE_HEAD_REF"
+            fi
+
+            echo "Calculating recommended bump..."
+            write_bump_outputs
+            run_hygiene bump
+
+            echo "::endgroup::"
+            ;;
+
+          bump)
+            write_bump_outputs
+            run_hygiene bump
+            ;;
+
+          branch | title | commit)
+            if [[ -n "$HYGIENE_VALUE" ]]; then
+              run_hygiene "$HYGIENE_COMMAND" "$HYGIENE_VALUE"
+            else
+              run_hygiene "$HYGIENE_COMMAND"
+            fi
+            ;;
+
+          *)
+            echo "::error::Unsupported command: $HYGIENE_COMMAND"
+            exit 1
+            ;;
+        esac

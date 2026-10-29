@@ -10,6 +10,8 @@ on:
     branches: [main]
     types: [opened, synchronize]
 
+permissions: {}
+
 env:
   NODE_VERSION: 24
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -24,7 +26,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Harden Runner 🛡️
-        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
           egress-policy: audit
 
@@ -36,10 +38,12 @@ jobs:
 
       - name: Create Bot Token 🤖🔑
         id: generate_token
-        uses: ./.github/actions/setup-bot
+        uses: $/.github/actions/setup-bot
         with:
           client-id: ${{ secrets.CHITRANK_BOT_CLIENT_ID }}
           private-key: ${{ secrets.CHITRANK_BOT_PRIVATE_KEY }}
+          permission-contents: read
+          permission-pull-requests: write
 
       - name: Label PR 🏷️
         uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0

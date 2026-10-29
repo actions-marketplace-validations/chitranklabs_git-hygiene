@@ -16,8 +16,13 @@ function runCli(args: string): { stdout: string; stderr: string; status: number 
       stdio: 'pipe',
     });
     return { stdout, stderr: '', status: 0 };
-  } catch (err: any) {
-    return { stdout: err.stdout || '', stderr: err.stderr || '', status: err.status };
+  } catch (err: unknown) {
+    const execError = err as { stdout?: string; stderr?: string; status?: number | null };
+    return {
+      stdout: execError.stdout ? String(execError.stdout) : '',
+      stderr: execError.stderr ? String(execError.stderr) : '',
+      status: execError.status ?? null,
+    };
   }
 }
 

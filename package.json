@@ -1,7 +1,7 @@
 {
   "name": "git-hygiene-workspace",
   "private": true,
-  "version": "0.4.12",
+  "version": "0.5.1",
   "description": "The ultimate zero-dependency metadata validator for modern Git workflows. Enforce conventional commits, branch naming patterns, and PR titles with blazing-fast native Node.js performance.",
   "author": {
     "name": "Chitrank Agnihotri",
@@ -37,8 +37,10 @@
   ],
   "type": "module",
   "scripts": {
-    "prepare": "lefthook install",
-    "build": "turbo build",
+    "prepare": "if git rev-parse --git-dir >/dev/null 2>&1; then lefthook install; fi",
+    "clean": "turbo clean && rm -rf .turbo coverage",
+    "build": "turbo build && pnpm build:action",
+    "build:action": "esbuild packages/cli/src/cli.ts --bundle --platform=node --target=node24 --format=esm --outfile=dist/action.js --minify",
     "test": "turbo test",
     "test:cov": "turbo test:cov",
     "lint": "turbo lint",
@@ -50,13 +52,17 @@
     "format:check": "turbo format:check",
     "dev": "turbo dev",
     "deps:update": "pnpm update --interactive --latest -r",
+    "changeset": "changeset",
+    "version:packages": "changeset version && node scripts/sync-jsr-versions.mjs",
     "changelog": "bash scripts/generate-changelog.sh",
     "tag": "bash scripts/git-tag.sh",
     "release": "pnpm build && node --experimental-strip-types packages/cli/src/cli.ts bump && pnpm changelog && echo 'Ready to publish!'"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.1",
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.6.0",
+    "esbuild": "^0.28.2",
     "eslint": "^10.2.1",
     "eslint-config-prettier": "^10.0.2",
     "globals": "^17.5.0",
@@ -68,9 +74,9 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.26.0"
   },
-  "packageManager": "pnpm@11.21.0",
+  "packageManager": "pnpm@11.25.0",
   "engines": {
-    "node": ">=24.0.0",
+    "node": ">=24.14.0",
     "pnpm": ">=9.0.0"
   },
   "git-hygiene": {
